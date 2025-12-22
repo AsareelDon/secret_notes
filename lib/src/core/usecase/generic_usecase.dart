@@ -1,0 +1,8 @@
+import 'package:dartz/dartz.dart';
+import 'package:secret_notes/src/core/error/failures.dart';
+
+abstract class GenericUseCase<Type, Params> {
+  Future<Either<Failures, Type>> call(Params params);
+}
+
+class NoParams {}

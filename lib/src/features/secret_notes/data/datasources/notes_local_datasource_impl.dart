@@ -1,0 +1,25 @@
+import 'package:objectbox/objectbox.dart';
+import 'package:secret_notes/src/core/error/exceptions.dart';
+import 'package:secret_notes/src/core/utils/app_logger.dart';
+import 'package:secret_notes/src/features/secret_notes/data/datasources/notes_local_datasource.dart';
+import 'package:secret_notes/src/features/secret_notes/data/models/note_model.dart';
+
+class NotesLocalDataSourceImpl implements NotesLocalDataSource {
+  final Store store;
+  final Box<NoteModel> noteModelBox;
+  final devLogger =  DevLogger.singleton;
+
+  NotesLocalDataSourceImpl({required this.store, Box<NoteModel>? box})
+      : noteModelBox = box ?? store.box<NoteModel>();
+
+  @override
+  Future<void> saveCreatedNote(NoteModel note) async {
+    try {
+      noteModelBox.put(note);
+      devLogger.info('Note saved successfully!: ${note.noteTitle}');
+    } catch (error, stackTrace) {
+      devLogger.error('Error saving note: $error', error, stackTrace);
+      throw CacheErrorException('Failed to save notes');
+    }
+  }
+}

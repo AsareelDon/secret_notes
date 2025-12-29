@@ -1,14 +1,14 @@
-class ServerError implements Exception {
+class ServerErrorException implements Exception {
   final String message;
-  ServerError(this.message);
+  ServerErrorException(this.message);
 }
 
-class CacheError implements Exception {
+class CacheErrorException implements Exception {
   final String message;
-  CacheError(this.message);
+  CacheErrorException(this.message);
 }
 
-class ResourceNotFoundError implements Exception {
+class ResourceNotFoundErrorException implements Exception {
   final String message;
-  ResourceNotFoundError(this.message);
+  ResourceNotFoundErrorException(this.message);
 }

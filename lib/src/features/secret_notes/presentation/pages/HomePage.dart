@@ -6,6 +6,7 @@ import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/ContainerWrapper.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/NotePage.dart';
 import 'package:intl/intl.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/widgets/primary_app_bar.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -28,34 +29,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text(
-          "Notes",
-          style: TextStyle(color: Colors.white, fontSize: 30),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider.value(
-                    value: context.read<CreateNoteCubit>(),
-                    child: NotePage(),
-                  )
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.add_rounded,
-              color: Colors.white,
-              size: 34,
-            ),
-          ),
-        ],
-      ),
+      appBar: PrimaryAppBar(title: "Notes"),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

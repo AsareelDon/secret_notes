@@ -20,8 +20,8 @@ void main() {
 
   final createdNotes = NoteEntity(
       noteId: 1,
-      noteTitle: "Mock Note",
-      noteContent: "mock content",
+      noteTitle: "Create Note App",
+      noteContent: "Should follow clean architecture and use cubit/bloc for state management",
       creationDate: DateTime.now(),
   );
 
@@ -39,6 +39,21 @@ void main() {
     result.fold(
           (f) => expect(f.message, "Server Failure"),
           (_) => fail("Expected Left, got Right"),
+    );
+    verify(mockNoteRepository.createNote(createdNotes)).called(1);
+    verifyNoMoreInteractions(mockNoteRepository);
+  });
+
+  test("should return Success(Right) create-notes", () async {
+    when(mockNoteRepository.createNote(createdNotes))
+        .thenAnswer((_) async => Right(createdNotes));
+
+    final result = await useCase.call(params);
+
+    expect(result, isA<Right<Failures, NoteEntity>>());
+    result.fold(
+          (_) => fail("Expected Right, got Left"),
+          (note) => expect(note, createdNotes),
     );
     verify(mockNoteRepository.createNote(createdNotes)).called(1);
     verifyNoMoreInteractions(mockNoteRepository);

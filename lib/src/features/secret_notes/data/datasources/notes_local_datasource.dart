@@ -2,4 +2,5 @@ import 'package:secret_notes/src/features/secret_notes/data/models/note_model.da
 
 abstract class NotesLocalDataSource {
   Future<void> saveCreatedNote(NoteModel note);
+  Future<List<NoteModel>> getSavedNotes();
 }

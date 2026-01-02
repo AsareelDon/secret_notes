@@ -4,7 +4,9 @@ import 'package:secret_notes/src/core/database/objectbox.dart';
 import 'package:secret_notes/src/features/secret_notes/data/datasources/notes_local_datasource_impl.dart';
 import 'package:secret_notes/src/features/secret_notes/data/repositories/note_repository_impl.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/usecases/create_note_usecase.dart';
+import 'package:secret_notes/src/features/secret_notes/domain/usecases/get_all_notes_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/pages/HomePage.dart';
 
 Future<void> main() async {
@@ -14,13 +16,21 @@ Future<void> main() async {
   final notesLocalDataSource = NotesLocalDataSourceImpl(store: objectBoxInit.store);
   final notesRepository = NoteRepositoryImpl(notesLocalDataSource: notesLocalDataSource);
   final createNoteUseCase = CreateNoteUseCase(noteRepository: notesRepository);
+  final getAllNotesUsecase = GetAllNotesUsecase(noteRepository: notesRepository);
 
-  runApp(MyApp(createNoteUseCase: createNoteUseCase));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CreateNoteCubit(createNoteUseCase: createNoteUseCase)),
+        BlocProvider(create: (context) => GetNoteCubit(getAllNotesUsecase: getAllNotesUsecase))
+      ],
+      child: MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
-  final CreateNoteUseCase createNoteUseCase;
-  const MyApp({super.key, required this.createNoteUseCase});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +40,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BlocProvider(
-        create: (_) => CreateNoteCubit(createNoteUseCase: createNoteUseCase),
-        child: HomePage(title: 'Secret Notes', createNoteUseCase: createNoteUseCase),
-      ),
+      home: HomePage(title: 'Secret Notes'),
     );
   }
 }

@@ -4,5 +4,5 @@ import 'package:secret_notes/src/features/secret_notes/domain/entities/note_enti
 
 abstract class NoteRepository {
   Future<Either<Failures, NoteEntity>> createNote(NoteEntity note);
-  Future<Either<Failures, NoteEntity>> getAllNotes();
+  Future<Either<Failures, List<NoteEntity>>> getAllNotes();
 }

@@ -22,4 +22,16 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
       throw CacheErrorException('Failed to save notes');
     }
   }
+
+  @override
+  Future<List<NoteModel>> getSavedNotes() async {
+    try {
+      final notes = noteModelBox.getAll();
+      devLogger.info('Notes fetched successfully! Count=${notes.length}');
+      return notes;
+    } catch (error, stackTrace) {
+      devLogger.error('Error fetching notes: $error', error, stackTrace);
+      throw CacheErrorException('Failed to fetch notes');
+    }
+  }
 }

@@ -80,6 +80,33 @@ class _HomePageState extends State<HomePage> {
           )
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        elevation: 1,
+        child: InkWell(
+          onTap: () async {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BlocProvider.value(
+                    value: context.read<CreateNoteCubit>(),
+                    child: NotePage(),
+                  )
+              ),
+            );
+          },
+          child: SizedBox(
+            height: 60,
+            child: Center(
+              child: Icon(
+                Icons.post_add_rounded,
+                color: Colors.black87,
+                size: 34,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

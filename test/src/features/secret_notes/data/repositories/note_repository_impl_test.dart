@@ -67,4 +67,38 @@ void main() {
     verify(mockNotesLocalDataSource.saveCreatedNote(any));
     verifyNoMoreInteractions(mockNotesLocalDataSource);
   });
+
+  test("should return list of notes from local datasource", () async {
+    when(mockNotesLocalDataSource.getSavedNotes())
+        .thenAnswer((_) async => [noteModel]);
+
+    final result = await noteRepositoryImpl.getAllNotes();
+
+    expect(result.isRight(), true);
+    result.fold(
+      (failure) => fail('Expected success, got failure'),
+      (notes) {
+        expect(notes.first.noteTitle, 'Test Note');
+        expect(notes.length, 1);
+      },
+    );
+
+    verify(mockNotesLocalDataSource.getSavedNotes()).called(1);
+    verifyNoMoreInteractions(mockNotesLocalDataSource);
+  });
+
+  test("should return cache-failure when datasource throws cache-error exception", () async {
+    when(mockNotesLocalDataSource.getSavedNotes())
+        .thenThrow(CacheErrorException("Error on getting notes"));
+
+    final result = await noteRepositoryImpl.getAllNotes();
+
+    expect(result.isLeft(), true);
+    expect(result, isA<Left<Failures, List<NoteEntity>>>());
+    result.fold((failure) => expect(failure.message, "Error on getting notes"),
+        (r) => fail("Should not return right"));
+    verify(mockNotesLocalDataSource.getSavedNotes()).called(1);
+    verifyNoMoreInteractions(mockNotesLocalDataSource);
+  });
+
 }

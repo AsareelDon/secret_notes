@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:secret_notes/src/features/secret_notes/domain/usecases/create_note_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_state.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/ContainerWrapper.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/NotePage.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
-  final CreateNoteUseCase createNoteUseCase;
 
-  const HomePage({super.key, required this.title, required this.createNoteUseCase});
+  const HomePage({super.key, required this.title});
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<GetNoteCubit>().getAllNotes();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +41,8 @@ class _HomePageState extends State<HomePage> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => CreateNoteCubit(
-                        createNoteUseCase: widget.createNoteUseCase
-                    ),
+                  builder: (context) => BlocProvider.value(
+                    value: context.read<CreateNoteCubit>(),
                     child: NotePage(),
                   )
                 ),
@@ -68,16 +73,32 @@ class _HomePageState extends State<HomePage> {
                 _buildSearchBar(),
                 const SizedBox(height: 12),
                 Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.only(top: 0, bottom: 24),
-                    children: [
-                      _buildNoteTile(
-                        title: "Meeting Notes",
-                        content: "Discuss project milestones and next sprint planning.",
-                        date: "Mar 12, 2025",
-                        accentColor: Colors.teal,
-                      ),
-                    ],
+                  child: BlocBuilder<GetNoteCubit, GetNoteState>(
+                    builder: (context, state) {
+                      if (state is GetNoteLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is GetNoteLoaded) {
+                        final notes = state.notes;
+                        if (notes.isEmpty) {
+                          return const Center(child: Text("No notes found"));
+                        }
+                        return ListView.builder(
+                          itemCount: state.notes.length,
+                          itemBuilder: (context, index) {
+                            final note = state.notes[index];
+                            final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
+                                .format(note.lastEditDate ?? note.creationDate);
+                            return _buildNoteTile(
+                              title: note.noteTitle,
+                              content: note.noteContent,
+                              date: displayDate,
+                              accentColor: Colors.teal,
+                            );
+                          },
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }
                   ),
                 )
               ],

@@ -23,4 +23,14 @@ class NoteEntity extends Equatable {
     creationDate,
     lastEditDate,
   ];
+
+  NoteEntity toEntity() {
+    return NoteEntity(
+      noteId: noteId,
+      noteTitle: noteTitle,
+      noteContent: noteContent,
+      creationDate: creationDate,
+      lastEditDate: lastEditDate,
+    );
+  }
 }

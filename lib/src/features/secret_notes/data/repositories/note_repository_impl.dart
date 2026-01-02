@@ -34,4 +34,28 @@ class NoteRepositoryImpl implements NoteRepository{
       return Left(CacheFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failures, List<NoteEntity>>> getAllNotes() async {
+    try {
+      final notes = await notesLocalDataSource.getSavedNotes();
+
+      final List<NoteEntity> notesList = notes.map((note) => NoteEntity(
+        noteId: note.noteId,
+        noteTitle: note.noteTitle,
+        noteContent: note.noteContent,
+        creationDate: note.creationDate,
+        lastEditDate: note.lastEditDate
+      )).toList();
+
+      devLogger.info("All notes were fetched! Count: ${notesList.length}");
+      return Right(notesList);
+    } on CacheErrorException catch (e) {
+      devLogger.error("Error on fetching notes: ${e.message}");
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      devLogger.error("Error fetching notes: $e");
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
 }

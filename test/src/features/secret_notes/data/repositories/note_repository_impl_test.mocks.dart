@@ -43,4 +43,14 @@ class MockNotesLocalDataSource extends _i1.Mock
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+
+  @override
+  _i3.Future<List<_i4.NoteModel>> getSavedNotes() =>
+      (super.noSuchMethod(
+            Invocation.method(#getSavedNotes, []),
+            returnValue: _i3.Future<List<_i4.NoteModel>>.value(
+              <_i4.NoteModel>[],
+            ),
+          )
+          as _i3.Future<List<_i4.NoteModel>>);
 }

@@ -94,11 +94,23 @@ class _HomePageState extends State<HomePage> {
           child: SizedBox(
             height: 60,
             child: Center(
-              child: Icon(
-                Icons.post_add_rounded,
-                color: Color(0xFF2563EB),
-                size: 34,
-              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.post_add_rounded,
+                    color: Color(0xFF2563EB),
+                    size: 34,
+                  ),
+                  Text(
+                    "New Note",
+                    style: TextStyle(
+                      color: Color(0xFF2563EB),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              )
             ),
           ),
         ),

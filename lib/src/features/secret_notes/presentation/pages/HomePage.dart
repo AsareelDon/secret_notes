@@ -30,7 +30,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: PrimaryAppBar(title: "Notes"),
+      appBar: PrimaryAppBar(
+        title: "Notes",
+        automaticallyImplyLeading: false
+      ),
       body: Container(
         decoration: const BoxDecoration(
           color: Color(0xFFF9FAFB)

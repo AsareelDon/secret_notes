@@ -4,17 +4,31 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actionButtons;
   final bool centerTitle;
+  final bool automaticallyImplyLeading;
+  final double? titleSpacing;
 
   const PrimaryAppBar({
     super.key,
     required this.title,
     this.actionButtons,
-    this.centerTitle = false
+    this.centerTitle = false,
+    required this.automaticallyImplyLeading,
+    this.titleSpacing
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: automaticallyImplyLeading ? IconButton(
+        icon: const Icon(
+          Icons.arrow_back_rounded,
+          color: Colors.black87,
+          size: 34,
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ) : null,
       title: Text(
           title,
           style: TextStyle(
@@ -25,6 +39,7 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       backgroundColor: Colors.transparent,
       elevation: 0,
+      titleSpacing: titleSpacing,
       actions: actionButtons
     );
   }

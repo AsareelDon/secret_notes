@@ -6,6 +6,7 @@ import 'package:secret_notes/src/features/secret_notes/domain/entities/note_enti
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/container_wrapper.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/widgets/primary_app_bar.dart';
 
 class ComposeNotePage extends StatefulWidget {
   final NoteEntity? noteEntity;
@@ -72,83 +73,64 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: Colors.white,
-            size: 34,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
+      appBar: PrimaryAppBar(
+        title: "Notes",
+        automaticallyImplyLeading: true,
+        titleSpacing: 0,
+        actionButtons: [
           IconButton(
             icon: const Icon(
               Icons.check_rounded,
-              color: Colors.white,
+              color: Colors.black87,
               size: 34,
             ),
             onPressed: _saveNote,
           )
         ],
-        title: const Text(
-          "Notes",
-          style: TextStyle(color: Colors.white, fontSize: 30),
-        ),
-        titleSpacing: 0,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.teal,
-              Color(0xFFB2EBF2),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          color: Color(0xFFF9FAFB)
         ),
         child: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ContainerWrapper(
-                      withBoxDecoration: false,
-                      paddingEdges: 0,
-                      child: TextField(
-                        autofocus: true,
-                        controller: _titleController,
-                        style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w500),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Title",
-                          hintStyle: TextStyle(color: Colors.white38, fontSize: 30, fontWeight: FontWeight.w500),
-                        ),
-                      ),
+          child: Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ContainerWrapper(
+                  withBoxDecoration: false,
+                  paddingEdges: 0,
+                  child: TextField(
+                    autofocus: true,
+                    controller: _titleController,
+                    cursorColor: Color(0xFF2563EB),
+                    style: const TextStyle(color: Colors.black87, fontSize: 27, fontWeight: FontWeight.w600),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Title",
+                      hintStyle: TextStyle(color: Colors.grey[500], fontSize: 27, fontWeight: FontWeight.w600),
                     ),
-                    ContainerWrapper(
-                      paddingEdges: 0,
-                      withBoxDecoration: false,
-                      child: TextField(
-                        controller: _contentController,
-                        style: const TextStyle(color: Colors.white, fontSize: 20),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Note something here",
-                          hintStyle: TextStyle(color: Colors.white38, fontSize: 20),
-                        ),
-                        maxLines: null,
-                      ),
-                    )
-                  ],
+                  ),
+                ),
+                ContainerWrapper(
+                  paddingEdges: 0,
+                  withBoxDecoration: false,
+                  child: TextField(
+                    controller: _contentController,
+                    cursorColor: Color(0xFF2563EB),
+                    style: const TextStyle(color: Colors.black87, fontSize: 20),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Note something here",
+                      hintStyle: TextStyle(color: Colors.grey[500], fontSize: 20),
+                    ),
+                    maxLines: null,
+                  ),
                 )
+              ],
             )
+          )
         ),
       ),
     );

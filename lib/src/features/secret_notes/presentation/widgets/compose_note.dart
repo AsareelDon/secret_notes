@@ -5,18 +5,18 @@ import 'package:secret_notes/src/core/utils/app_logger.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/widgets/ContainerWrapper.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/widgets/container_wrapper.dart';
 
-class NotePage extends StatefulWidget {
+class ComposeNotePage extends StatefulWidget {
   final NoteEntity? noteEntity;
 
-  const NotePage({super.key, this.noteEntity});
+  const ComposeNotePage({super.key, this.noteEntity});
 
   @override
-  State<NotePage> createState() => _NotePageState();
+  State<ComposeNotePage> createState() => _ComposeNotePageState();
 }
 
-class _NotePageState extends State<NotePage> {
+class _ComposeNotePageState extends State<ComposeNotePage> {
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
 

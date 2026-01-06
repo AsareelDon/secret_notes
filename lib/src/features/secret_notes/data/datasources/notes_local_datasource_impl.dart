@@ -1,4 +1,3 @@
-import 'package:objectbox/objectbox.dart';
 import 'package:secret_notes/objectbox.g.dart';
 import 'package:secret_notes/src/core/error/exceptions.dart';
 import 'package:secret_notes/src/core/utils/app_logger.dart';

@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:secret_notes/src/core/utils/app_logger.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/widgets/container_wrapper.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/widgets/primary_app_bar.dart';
+import 'package:secret_notes/src/core/ui/container_wrapper.dart';
+import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
 
 class ComposeNotePage extends StatefulWidget {
   final NoteEntity? noteEntity;
@@ -20,7 +19,7 @@ class ComposeNotePage extends StatefulWidget {
 class _ComposeNotePageState extends State<ComposeNotePage> {
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
-
+  late bool _isEnabled = false;
   final devLogger = DevLogger.singleton;
 
   @override
@@ -28,6 +27,9 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
     super.initState();
     _titleController = TextEditingController(text: widget.noteEntity?.noteTitle);
     _contentController = TextEditingController(text: widget.noteEntity?.noteContent);
+
+    _titleController.addListener(_checkIfNoteIsEmpty);
+    _contentController.addListener(_checkIfNoteIsEmpty);
   }
 
   @override
@@ -35,6 +37,12 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
     _titleController.dispose();
     _contentController.dispose();
     super.dispose();
+  }
+
+  void _checkIfNoteIsEmpty() {
+    setState(() {
+      _isEnabled = _titleController.text.isNotEmpty || _contentController.text.isNotEmpty;
+    });
   }
 
   void _saveNote() {
@@ -78,14 +86,15 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
         automaticallyImplyLeading: true,
         titleSpacing: 0,
         actionButtons: [
-          IconButton(
-            icon: const Icon(
-              Icons.check_rounded,
-              color: Colors.black87,
-              size: 34,
-            ),
-            onPressed: _saveNote,
-          )
+          if (_isEnabled)
+            IconButton(
+              icon: const Icon(
+                Icons.check_rounded,
+                color: Colors.black87,
+                size: 34,
+              ),
+              onPressed: _saveNote,
+            )
         ],
       ),
       body: Container(

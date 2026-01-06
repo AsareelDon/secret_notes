@@ -7,7 +7,7 @@ import 'package:secret_notes/src/features/secret_notes/domain/usecases/create_no
 import 'package:secret_notes/src/features/secret_notes/domain/usecases/get_all_notes_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/pages/HomePage.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/pages/home_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

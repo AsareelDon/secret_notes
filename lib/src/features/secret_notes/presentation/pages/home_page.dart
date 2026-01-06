@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_state.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/widgets/compose_note.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/pages/compose_note_page.dart';
 import 'package:intl/intl.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/widgets/note_tile_list.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/widgets/primary_app_bar.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/widgets/note_tile.dart';
+import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/search_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                             final note = state.notes[index];
                             final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
                                 .format(note.lastEditDate ?? note.creationDate);
-                            return NoteTileList(
+                            return NoteTile(
                               title: note.noteTitle,
                               content: note.noteContent,
                               date: displayDate,

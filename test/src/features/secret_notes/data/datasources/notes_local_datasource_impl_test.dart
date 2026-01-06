@@ -34,4 +34,25 @@ void main() {
     expect(() => dataSourceImpl.saveCreatedNote(mockNoteObject), throwsA(isA<CacheErrorException>()));
     verify(mockBox.put(mockNoteObject)).called(1);
   });
+
+  test("should call modelBox-getAll when getting all notes", () async {
+    when(mockBox.getAll()).thenReturn([mockNoteObject]);
+    await dataSourceImpl.getSavedNotes();
+    verify(mockBox.getAll()).called(1);
+  });
+
+  test("should throw cache-error-exception when modelBox-getAll failed", () async {
+    when(mockBox.getAll())
+        .thenThrow(CacheErrorException('Failed to get notes'));
+
+    expect(() => dataSourceImpl.getSavedNotes(), throwsA(isA<CacheErrorException>()));
+    verify(mockBox.getAll()).called(1);
+  });
+
+  test("should return list of notes when modelBox-getAll is successful", () async {
+    when(mockBox.getAll()).thenReturn([mockNoteObject]);
+    final result = await dataSourceImpl.getSavedNotes();
+    expect(result, [mockNoteObject]);
+    verify(mockBox.getAll()).called(1);
+  });
 }

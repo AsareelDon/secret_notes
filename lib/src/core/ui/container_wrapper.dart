@@ -23,7 +23,7 @@ class ContainerWrapper extends StatelessWidget {
       padding: EdgeInsets.all(paddingEdges),
       decoration: withBoxDecoration ? BoxDecoration(
         color: containerColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: shadowColor!,

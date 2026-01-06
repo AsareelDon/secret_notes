@@ -9,12 +9,12 @@ class CustomSearchBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: const TextField(
-        style: TextStyle(color: Colors.black87), // dark text for contrast
-        cursorColor: Colors.black87,
+        style: TextStyle(color: Colors.black87),
+        cursorColor: Color(0xFF2563EB),
         decoration: InputDecoration(
           icon: Icon(Icons.search, color: Color(0xFF6B7280)),
           hintText: 'Search notes',

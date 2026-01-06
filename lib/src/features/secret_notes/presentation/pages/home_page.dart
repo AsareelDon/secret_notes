@@ -7,7 +7,6 @@ import 'package:secret_notes/src/features/secret_notes/presentation/pages/compos
 import 'package:intl/intl.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/note_tile.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/widgets/search_bar.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -35,53 +34,42 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFF9FAFB)
-        ),
+        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(0.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomSearchBar(),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: BlocBuilder<GetNoteCubit, GetNoteState>(
-                    builder: (context, state) {
-                      if (state is GetNoteLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is GetNoteLoaded) {
-                        final notes = state.notes;
-                        if (notes.isEmpty) {
-                          return const Center(child: Text("No notes found"));
-                        }
-                        return ListView.builder(
-                          itemCount: state.notes.length,
-                          itemBuilder: (context, index) {
-                            final note = state.notes[index];
-                            final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
-                                .format(note.lastEditDate ?? note.creationDate);
-                            return NoteTile(
-                              title: note.noteTitle,
-                              content: note.noteContent,
-                              date: displayDate,
-                            );
-                          },
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    }
-                  ),
-                )
-              ],
+            child: BlocBuilder<GetNoteCubit, GetNoteState>(
+              builder: (context, state) {
+                if (state is GetNoteLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is GetNoteLoaded) {
+                  final notes = state.notes;
+                  if (notes.isEmpty) {
+                    return const Center(child: Text("No notes found"));
+                  }
+                  return ListView.builder(
+                    itemCount: state.notes.length,
+                    itemBuilder: (context, index) {
+                      final note = state.notes[index];
+                      final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
+                          .format(note.lastEditDate ?? note.creationDate);
+                      return NoteTile(
+                        title: note.noteTitle,
+                        content: note.noteContent,
+                        date: displayDate,
+                      );
+                    },
+                  );
+                }
+                return const SizedBox.shrink();
+              }
             ),
           )
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        elevation: 1,
+        color: Theme.of(context).bottomAppBarTheme.color,
+        elevation: Theme.of(context).bottomAppBarTheme.elevation,
         child: InkWell(
           onTap: () async {
             await Navigator.push(
@@ -99,19 +87,8 @@ class _HomePageState extends State<HomePage> {
             child: Center(
               child: Column(
                 children: [
-                  Icon(
-                    Icons.post_add_rounded,
-                    color: Color(0xFF2563EB),
-                    size: 34,
-                  ),
-                  Text(
-                    "New Note",
-                    style: TextStyle(
-                      color: Color(0xFF2563EB),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  Icon(Icons.post_add_rounded, color: Theme.of(context).primaryColor, size: 34),
+                  Text("New Note", style: Theme.of(context).textTheme.labelSmall),
                 ],
               )
             ),

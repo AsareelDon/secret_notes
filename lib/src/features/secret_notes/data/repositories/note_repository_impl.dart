@@ -19,7 +19,8 @@ class NoteRepositoryImpl implements NoteRepository{
       final createdNotes = NoteModel(
         noteTitle: note.noteTitle,
         noteContent: note.noteContent,
-        creationDate: note.creationDate
+        creationDate: note.creationDate,
+        lastEditDate: note.lastEditDate
       );
       await notesLocalDataSource.saveCreatedNote(createdNotes);
       devLogger.info("Note was saved!: $createdNotes");

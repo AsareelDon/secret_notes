@@ -20,25 +20,18 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leading: automaticallyImplyLeading ? IconButton(
-        icon: const Icon(
+        icon: Icon(
           Icons.arrow_back_rounded,
-          color: Colors.black87,
-          size: 34,
+          color: Theme.of(context).appBarTheme.actionsIconTheme?.color,
+          size: Theme.of(context).appBarTheme.actionsIconTheme?.size,
         ),
         onPressed: () {
           Navigator.pop(context);
         },
       ) : null,
-      title: Text(
-          title,
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 30,
-            fontWeight: FontWeight.w600,
-          )
-      ),
+      title: Text(title, style: Theme.of(context).appBarTheme.titleTextStyle),
       backgroundColor: Colors.transparent,
-      elevation: 0,
+      elevation: Theme.of(context).appBarTheme.elevation,
       titleSpacing: titleSpacing,
       actions: actionButtons
     );

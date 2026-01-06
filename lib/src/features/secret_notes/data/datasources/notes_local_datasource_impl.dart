@@ -1,4 +1,5 @@
 import 'package:objectbox/objectbox.dart';
+import 'package:secret_notes/objectbox.g.dart';
 import 'package:secret_notes/src/core/error/exceptions.dart';
 import 'package:secret_notes/src/core/utils/app_logger.dart';
 import 'package:secret_notes/src/features/secret_notes/data/datasources/notes_local_datasource.dart';
@@ -26,7 +27,14 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
   @override
   Future<List<NoteModel>> getSavedNotes() async {
     try {
-      final notes = noteModelBox.getAll();
+      final query = noteModelBox.query().order(
+        NoteModel_.lastEditDate,
+        flags: Order.descending,
+      ).build();
+
+      final List<NoteModel> notes = query.find();
+      query.close();
+
       devLogger.info('Notes fetched successfully! Count=${notes.length}');
       return notes;
     } catch (error, stackTrace) {

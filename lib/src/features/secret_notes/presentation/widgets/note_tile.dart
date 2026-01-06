@@ -18,37 +18,16 @@ class NoteTile extends StatelessWidget {
     return ContainerWrapper(
       withBoxDecoration: true,
       paddingEdges: 16,
-      containerColor: Colors.white,
+      containerColor: Theme.of(context).cardColor,
       shadowColor: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF111827),
-            ),
-          ),
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 6),
-          Text(
-            content,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black87,
-            ),
-          ),
+          Text(content, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: 8),
-          Text(
-            date,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black87,
-            ),
-          ),
+          Text(date, style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
     );

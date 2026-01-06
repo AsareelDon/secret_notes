@@ -6,6 +6,7 @@ import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
 import 'package:secret_notes/src/core/ui/container_wrapper.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
 
 class ComposeNotePage extends StatefulWidget {
   final NoteEntity? noteEntity;
@@ -62,10 +63,7 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
     return BlocListener<CreateNoteCubit, CreateNoteState>(
       listener: (context, state) {
         if (state is CreateNoteSuccess) {
-          final response = state.noteResponse;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.message)),
-          );
+          context.read<GetNoteCubit>().getAllNotes();
           Navigator.pop(context);
         } else if (state is CreateNoteFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,19 +86,17 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
         actionButtons: [
           if (_isEnabled)
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.check_rounded,
-                color: Colors.black87,
-                size: 34,
+                color: Theme.of(context).appBarTheme.actionsIconTheme?.color,
+                size: Theme.of(context).appBarTheme.actionsIconTheme?.size,
               ),
               onPressed: _saveNote,
             )
         ],
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFF9FAFB)
-        ),
+        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(0.0),
@@ -113,12 +109,16 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
                   child: TextField(
                     autofocus: true,
                     controller: _titleController,
-                    cursorColor: Color(0xFF2563EB),
-                    style: const TextStyle(color: Colors.black87, fontSize: 27, fontWeight: FontWeight.w600),
+                    cursorColor: Theme.of(context).primaryColor,
+                    style: Theme.of(context).textTheme.titleLarge,
                     decoration: InputDecoration(
-                      border: InputBorder.none,
+                      border: Theme.of(context).inputDecorationTheme.border,
                       hintText: "Title",
-                      hintStyle: TextStyle(color: Colors.grey[500], fontSize: 27, fontWeight: FontWeight.w600),
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                        fontSize: 27,
+                        fontWeight: FontWeight.w600
+                      ),
                     ),
                   ),
                 ),
@@ -127,12 +127,15 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
                   withBoxDecoration: false,
                   child: TextField(
                     controller: _contentController,
-                    cursorColor: Color(0xFF2563EB),
-                    style: const TextStyle(color: Colors.black87, fontSize: 20),
+                    cursorColor: Theme.of(context).primaryColor,
+                    style: Theme.of(context).textTheme.bodyLarge,
                     decoration: InputDecoration(
-                      border: InputBorder.none,
+                      border: Theme.of(context).inputDecorationTheme.border,
                       hintText: "Note something here",
-                      hintStyle: TextStyle(color: Colors.grey[500], fontSize: 20),
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).inputDecorationTheme.hintStyle?.color,
+                        fontSize: 20
+                      ),
                     ),
                     maxLines: null,
                   ),

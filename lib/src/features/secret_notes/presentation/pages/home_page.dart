@@ -36,35 +36,32 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: BlocBuilder<GetNoteCubit, GetNoteState>(
-              builder: (context, state) {
-                if (state is GetNoteLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is GetNoteLoaded) {
-                  final notes = state.notes;
-                  if (notes.isEmpty) {
-                    return const Center(child: Text("No notes found"));
-                  }
-                  return ListView.builder(
-                    itemCount: state.notes.length,
-                    itemBuilder: (context, index) {
-                      final note = state.notes[index];
-                      final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
-                          .format(note.lastEditDate ?? note.creationDate);
-                      return NoteTile(
-                        title: note.noteTitle,
-                        content: note.noteContent,
-                        date: displayDate,
-                      );
-                    },
-                  );
+          child: BlocBuilder<GetNoteCubit, GetNoteState>(
+            builder: (context, state) {
+              if (state is GetNoteLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is GetNoteLoaded) {
+                final notes = state.notes;
+                if (notes.isEmpty) {
+                  return const Center(child: Text("No notes found"));
                 }
-                return const SizedBox.shrink();
+                return ListView.builder(
+                  itemCount: state.notes.length,
+                  itemBuilder: (context, index) {
+                    final note = state.notes[index];
+                    final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
+                        .format(note.lastEditDate ?? note.creationDate);
+                    return NoteTile(
+                      title: note.noteTitle,
+                      content: note.noteContent,
+                      date: displayDate,
+                    );
+                  },
+                );
               }
-            ),
-          )
+              return const SizedBox.shrink();
+            }
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -31,6 +32,9 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
       ) : null,
       title: Text(title, style: Theme.of(context).appBarTheme.titleTextStyle),
       backgroundColor: Colors.transparent,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
       elevation: Theme.of(context).appBarTheme.elevation,
       titleSpacing: titleSpacing,
       actions: actionButtons

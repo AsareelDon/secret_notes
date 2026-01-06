@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:secret_notes/src/core/ui/container_wrapper.dart';
 
 class NoteTile extends StatelessWidget {
   final String title;
@@ -15,20 +14,28 @@ class NoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContainerWrapper(
-      withBoxDecoration: true,
-      paddingEdges: 16,
-      containerColor: Theme.of(context).cardColor,
-      shadowColor: Colors.transparent,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 6),
-          Text(content, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium),
-          const SizedBox(height: 8),
-          Text(date, style: Theme.of(context).textTheme.bodyMedium),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Material(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(title),
+          titleTextStyle: Theme.of(context).textTheme.titleMedium,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(content, style: Theme.of(context).textTheme.bodyMedium),
+              const SizedBox(height: 8),
+              Text(date, style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ),
+          onTap: () {},
+        )
       ),
     );
   }

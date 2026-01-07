@@ -32,8 +32,8 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
       ) : null,
       title: Text(title, style: Theme.of(context).appBarTheme.titleTextStyle),
       backgroundColor: Colors.transparent,
-      systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Theme.of(context).primaryColor,
       ),
       elevation: Theme.of(context).appBarTheme.elevation,
       titleSpacing: titleSpacing,

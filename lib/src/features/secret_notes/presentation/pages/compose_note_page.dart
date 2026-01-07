@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:secret_notes/src/core/utils/app_logger.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
 import 'package:secret_notes/src/core/ui/container_wrapper.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_state.dart';
 
 class ComposeNotePage extends StatefulWidget {
   final NoteEntity? noteEntity;
@@ -21,7 +22,6 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
   late bool _isEnabled = false;
-  final devLogger = DevLogger.singleton;
 
   @override
   void initState() {
@@ -47,31 +47,57 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
   }
 
   void _saveNote() {
-    final createdNote = NoteEntity(
-      noteId: widget.noteEntity?.noteId,
-      noteTitle: _titleController.text.trim(),
-      noteContent: _contentController.text.trim(),
-      creationDate: widget.noteEntity?.creationDate?? DateTime.now(),
-      lastEditDate: DateTime.now()
-    );
-
-    context.read<CreateNoteCubit>().createNote(createdNote);
+    if (widget.noteEntity != null) {
+      final editedNote = NoteEntity(
+        noteId: widget.noteEntity?.noteId,
+        noteTitle: _titleController.text.trim(),
+        noteContent: _contentController.text.trim(),
+        creationDate: widget.noteEntity!.creationDate,
+        lastEditDate: DateTime.now()
+      );
+      context.read<EditNoteCubit>().editNoteById(editedNote);
+    } else {
+      final createdNote = NoteEntity(
+        noteId: widget.noteEntity?.noteId,
+        noteTitle: _titleController.text.trim(),
+        noteContent: _contentController.text.trim(),
+        creationDate: DateTime.now(),
+        lastEditDate: DateTime.now()
+      );
+      context.read<CreateNoteCubit>().createNote(createdNote);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CreateNoteCubit, CreateNoteState>(
-      listener: (context, state) {
-        if (state is CreateNoteSuccess) {
-          context.read<GetNoteCubit>().getAllNotes();
-          Navigator.pop(context);
-        } else if (state is CreateNoteFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
-          );
-        }
-      },
-      child: _noteWidgetBody(context),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CreateNoteCubit, CreateNoteState>(
+          listener: (context, state) {
+            if (state is CreateNoteSuccess) {
+              context.read<GetNoteCubit>().getAllNotes();
+              Navigator.pop(context);
+            } else if (state is CreateNoteFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.error)),
+              );
+            }
+          },
+        ),
+        BlocListener<EditNoteCubit, EditNoteState>(
+          listener: (context, state) {
+            if (state is EditNoteLoaded) {
+              context.read<GetNoteCubit>().getAllNotes();
+              Navigator.pop(context);
+            } else if (state is EditNoteError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.error)),
+              );
+            }
+          }
+        )
+      ],
+      child: _noteWidgetBody(context)
     );
   }
 

@@ -1,10 +1,10 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_state.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_state.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/pages/compose_note_page.dart';
-import 'package:intl/intl.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/note_tile.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
 
@@ -49,12 +49,11 @@ class _HomePageState extends State<HomePage> {
                   itemCount: state.notes.length,
                   itemBuilder: (context, index) {
                     final note = state.notes[index];
-                    final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
-                        .format(note.lastEditDate ?? note.creationDate);
+                    final dateCreated = DateFormat('yyyy-MM-dd – HH:mm')
+                        .format(note.lastEditDate?? note.creationDate);
                     return NoteTile(
-                      title: note.noteTitle,
-                      content: note.noteContent,
-                      date: displayDate,
+                      noteEntity: note,
+                      dateCreated: dateCreated,
                     );
                   },
                 );
@@ -72,10 +71,10 @@ class _HomePageState extends State<HomePage> {
             await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => BlocProvider.value(
-                    value: context.read<CreateNoteCubit>(),
-                    child: ComposeNotePage(),
-                  )
+                builder: (context) => BlocProvider.value(
+                  value: context.read<CreateNoteCubit>(),
+                  child: ComposeNotePage(),
+                )
               ),
             );
           },

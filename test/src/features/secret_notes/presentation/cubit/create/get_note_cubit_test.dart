@@ -6,8 +6,8 @@ import 'package:secret_notes/src/core/error/failures.dart';
 import 'package:secret_notes/src/core/usecase/generic_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/usecases/get_all_notes_usecase.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_state.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_state.dart';
 import 'get_note_cubit_test.mocks.dart';
 
 @GenerateMocks([GetAllNotesUsecase])

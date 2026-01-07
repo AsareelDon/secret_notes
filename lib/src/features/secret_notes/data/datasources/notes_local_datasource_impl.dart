@@ -41,4 +41,21 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
       throw CacheErrorException('Failed to fetch notes');
     }
   }
+
+  @override
+  Future<void> saveEditedNote(NoteModel note) async {
+    try {
+      final existingNote = noteModelBox.get(note.noteId);
+
+      if (existingNote != null) {
+        noteModelBox.put(note);
+        devLogger.info('Note updated successfully!: ${note.noteTitle}');
+      } else {
+        throw CacheErrorException('Note not found');
+      }
+    } catch (error, stackTrace) {
+      devLogger.error('Error editing note: $error', error, stackTrace);
+      throw CacheErrorException('Failed to edit notes');
+    }
+  }
 }

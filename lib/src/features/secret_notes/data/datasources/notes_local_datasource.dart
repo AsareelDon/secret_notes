@@ -4,4 +4,5 @@ abstract class NotesLocalDataSource {
   Future<void> saveCreatedNote(NoteModel note);
   Future<List<NoteModel>> getSavedNotes();
   Future<void> saveEditedNote(NoteModel note);
+  Future<void> deleteNoteById(int noteId);
 }

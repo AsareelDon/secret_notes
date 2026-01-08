@@ -2,8 +2,13 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/delete/delete_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/delete/delete_note_state.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_state.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_state.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/pages/compose_note_page.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/note_tile.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
@@ -36,31 +41,59 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: SafeArea(
-          child: BlocBuilder<GetNoteCubit, GetNoteState>(
-            builder: (context, state) {
-              if (state is GetNoteLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is GetNoteLoaded) {
-                final notes = state.notes;
-                if (notes.isEmpty) {
-                  return const Center(child: Text("No notes found"));
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<CreateNoteCubit, CreateNoteState>(
+                listenWhen: (previous, current) => current is CreateNoteSuccess,
+                listener: (context, state) {
+                  if (state is CreateNoteSuccess) {
+                    context.read<GetNoteCubit>().getAllNotes();
+                  }
                 }
-                return ListView.builder(
-                  itemCount: state.notes.length,
-                  itemBuilder: (context, index) {
-                    final note = state.notes[index];
-                    final dateCreated = DateFormat('MM/dd/yyyy')
+              ),
+              BlocListener<EditNoteCubit, EditNoteState>(
+                listenWhen: (previous, current) => current is EditNoteLoaded,
+                listener: (context, state) {
+                  if (state is EditNoteLoaded) {
+                    context.read<GetNoteCubit>().getAllNotes();
+                  }
+                }
+              ),
+              BlocListener<DeleteNoteCubit, DeleteNoteState>(
+                listenWhen: (previous, current) => current is DeleteNoteSuccess,
+                listener: (context, state) {
+                  if (state is DeleteNoteSuccess) {
+                    context.read<GetNoteCubit>().getAllNotes();
+                  }
+                }
+              )
+            ],
+            child: BlocBuilder<GetNoteCubit, GetNoteState>(
+              builder: (context, state) {
+                if (state is GetNoteLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is GetNoteLoaded) {
+                  final notes = state.notes;
+                  if (notes.isEmpty) {
+                    return const Center(child: Text("No notes found"));
+                  }
+                  return ListView.builder(
+                    itemCount: state.notes.length,
+                    itemBuilder: (context, index) {
+                      final note = state.notes[index];
+                      final dateCreated = DateFormat('MM/dd/yyyy')
                         .format(note.lastEditDate?? note.creationDate);
-                    return NoteTile(
-                      noteEntity: note,
-                      dateCreated: dateCreated,
-                      noteTileIndex: index,
-                    );
-                  },
-                );
+                      return NoteTile(
+                        noteEntity: note,
+                        dateCreated: dateCreated,
+                        noteTileIndex: index,
+                      );
+                    },
+                  );
+                }
+                return const SizedBox.shrink();
               }
-              return const SizedBox.shrink();
-            }
+            ),
           ),
         ),
       ),

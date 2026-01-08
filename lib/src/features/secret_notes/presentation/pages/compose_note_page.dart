@@ -5,7 +5,6 @@ import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
 import 'package:secret_notes/src/core/ui/container_wrapper.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_state.dart';
 

@@ -25,6 +25,7 @@ dependencies:
   font_awesome_flutter: ^10.12.0
   bloc: ^9.2.0
   flutter_slidable: ^4.0.3
+  coverage: ^1.15.0
 
 dev_dependencies:
   flutter_test:

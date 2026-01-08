@@ -45,7 +45,7 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
   @override
   Future<void> saveEditedNote(NoteModel note) async {
     try {
-      final existingNote = noteModelBox.get(note.noteId);
+      final NoteModel? existingNote = noteModelBox.get(note.noteId);
 
       if (existingNote != null) {
         noteModelBox.put(note);

@@ -10,8 +10,11 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
 import 'package:objectbox/src/native/box.dart' as _i2;
 import 'package:objectbox/src/native/query/query.dart' as _i4;
+import 'package:objectbox/src/native/query/vector_search_results.dart' as _i9;
 import 'package:objectbox/src/store.dart' as _i5;
 import 'package:objectbox/src/transaction.dart' as _i8;
+import 'package:secret_notes/src/features/secret_notes/data/models/note_model.dart'
+    as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -41,6 +44,17 @@ class _FakeFuture_1<T> extends _i1.SmartFake implements _i3.Future<T> {
 class _FakeQueryBuilder_2<T1> extends _i1.SmartFake
     implements _i4.QueryBuilder<T1> {
   _FakeQueryBuilder_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakePropertyQuery_3<T1> extends _i1.SmartFake
+    implements _i4.PropertyQuery<T1> {
+  _FakePropertyQuery_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeQuery_4<T> extends _i1.SmartFake implements _i4.Query<T> {
+  _FakeQuery_4(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -395,4 +409,253 @@ class MockBox<T> extends _i1.Mock implements _i2.Box<T> {
             returnValue: _i3.Future<int>.value(0),
           )
           as _i3.Future<int>);
+}
+
+/// A class which mocks [Query].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockQuery<T> extends _i1.Mock implements _i4.Query<T> {
+  MockQuery() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  int get entityId =>
+      (super.noSuchMethod(Invocation.getter(#entityId), returnValue: 0) as int);
+
+  @override
+  set offset(int? offset) => super.noSuchMethod(
+    Invocation.setter(#offset, offset),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set limit(int? limit) => super.noSuchMethod(
+    Invocation.setter(#limit, limit),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  int count() =>
+      (super.noSuchMethod(Invocation.method(#count, []), returnValue: 0)
+          as int);
+
+  @override
+  int remove() =>
+      (super.noSuchMethod(Invocation.method(#remove, []), returnValue: 0)
+          as int);
+
+  @override
+  _i3.Future<int> removeAsync() =>
+      (super.noSuchMethod(
+            Invocation.method(#removeAsync, []),
+            returnValue: _i3.Future<int>.value(0),
+          )
+          as _i3.Future<int>);
+
+  @override
+  void close() => super.noSuchMethod(
+    Invocation.method(#close, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i3.Future<T?> findFirstAsync() =>
+      (super.noSuchMethod(
+            Invocation.method(#findFirstAsync, []),
+            returnValue: _i3.Future<T?>.value(),
+          )
+          as _i3.Future<T?>);
+
+  @override
+  _i3.Future<T?> findUniqueAsync() =>
+      (super.noSuchMethod(
+            Invocation.method(#findUniqueAsync, []),
+            returnValue: _i3.Future<T?>.value(),
+          )
+          as _i3.Future<T?>);
+
+  @override
+  List<int> findIds() =>
+      (super.noSuchMethod(Invocation.method(#findIds, []), returnValue: <int>[])
+          as List<int>);
+
+  @override
+  _i3.Future<List<int>> findIdsAsync() =>
+      (super.noSuchMethod(
+            Invocation.method(#findIdsAsync, []),
+            returnValue: _i3.Future<List<int>>.value(<int>[]),
+          )
+          as _i3.Future<List<int>>);
+
+  @override
+  List<T> find() =>
+      (super.noSuchMethod(Invocation.method(#find, []), returnValue: <T>[])
+          as List<T>);
+
+  @override
+  _i3.Future<List<T>> findAsync() =>
+      (super.noSuchMethod(
+            Invocation.method(#findAsync, []),
+            returnValue: _i3.Future<List<T>>.value(<T>[]),
+          )
+          as _i3.Future<List<T>>);
+
+  @override
+  List<_i9.IdWithScore> findIdsWithScores() =>
+      (super.noSuchMethod(
+            Invocation.method(#findIdsWithScores, []),
+            returnValue: <_i9.IdWithScore>[],
+          )
+          as List<_i9.IdWithScore>);
+
+  @override
+  _i3.Future<List<_i9.IdWithScore>> findIdsWithScoresAsync() =>
+      (super.noSuchMethod(
+            Invocation.method(#findIdsWithScoresAsync, []),
+            returnValue: _i3.Future<List<_i9.IdWithScore>>.value(
+              <_i9.IdWithScore>[],
+            ),
+          )
+          as _i3.Future<List<_i9.IdWithScore>>);
+
+  @override
+  List<_i9.ObjectWithScore<T>> findWithScores() =>
+      (super.noSuchMethod(
+            Invocation.method(#findWithScores, []),
+            returnValue: <_i9.ObjectWithScore<T>>[],
+          )
+          as List<_i9.ObjectWithScore<T>>);
+
+  @override
+  _i3.Future<List<_i9.ObjectWithScore<T>>> findWithScoresAsync() =>
+      (super.noSuchMethod(
+            Invocation.method(#findWithScoresAsync, []),
+            returnValue: _i3.Future<List<_i9.ObjectWithScore<T>>>.value(
+              <_i9.ObjectWithScore<T>>[],
+            ),
+          )
+          as _i3.Future<List<_i9.ObjectWithScore<T>>>);
+
+  @override
+  _i3.Stream<T> stream() =>
+      (super.noSuchMethod(
+            Invocation.method(#stream, []),
+            returnValue: _i3.Stream<T>.empty(),
+          )
+          as _i3.Stream<T>);
+
+  @override
+  String describe() =>
+      (super.noSuchMethod(
+            Invocation.method(#describe, []),
+            returnValue: _i6.dummyValue<String>(
+              this,
+              Invocation.method(#describe, []),
+            ),
+          )
+          as String);
+
+  @override
+  String describeParameters() =>
+      (super.noSuchMethod(
+            Invocation.method(#describeParameters, []),
+            returnValue: _i6.dummyValue<String>(
+              this,
+              Invocation.method(#describeParameters, []),
+            ),
+          )
+          as String);
+
+  @override
+  _i4.PropertyQuery<DartType> property<DartType>(
+    _i4.QueryProperty<T, DartType>? prop,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#property, [prop]),
+            returnValue: _FakePropertyQuery_3<DartType>(
+              this,
+              Invocation.method(#property, [prop]),
+            ),
+          )
+          as _i4.PropertyQuery<DartType>);
+}
+
+/// A class which mocks [QueryBuilder].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockQueryBuilder extends _i1.Mock
+    implements _i4.QueryBuilder<_i10.NoteModel> {
+  MockQueryBuilder() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Query<_i10.NoteModel> build() =>
+      (super.noSuchMethod(
+            Invocation.method(#build, []),
+            returnValue: _FakeQuery_4<_i10.NoteModel>(
+              this,
+              Invocation.method(#build, []),
+            ),
+          )
+          as _i4.Query<_i10.NoteModel>);
+
+  @override
+  _i3.Stream<_i4.Query<_i10.NoteModel>> watch({
+    bool? triggerImmediately = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watch, [], {
+              #triggerImmediately: triggerImmediately,
+            }),
+            returnValue: _i3.Stream<_i4.Query<_i10.NoteModel>>.empty(),
+          )
+          as _i3.Stream<_i4.Query<_i10.NoteModel>>);
+
+  @override
+  _i4.QueryBuilder<_i10.NoteModel> order<D>(
+    _i4.QueryProperty<_i10.NoteModel, D>? p, {
+    int? flags = 0,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#order, [p], {#flags: flags}),
+            returnValue: _FakeQueryBuilder_2<_i10.NoteModel>(
+              this,
+              Invocation.method(#order, [p], {#flags: flags}),
+            ),
+          )
+          as _i4.QueryBuilder<_i10.NoteModel>);
+
+  @override
+  link<TargetEntityT>(
+    _i4.QueryRelationToOne<_i10.NoteModel, TargetEntityT>? rel, [
+    _i4.Condition<TargetEntityT>? qc,
+  ]) => throw UnsupportedError(
+    r'"link" cannot be used without a mockito fallback generator.',
+  );
+
+  @override
+  backlink<SourceEntityT>(
+    _i4.QueryRelationToOne<SourceEntityT, _i10.NoteModel>? rel, [
+    _i4.Condition<SourceEntityT>? qc,
+  ]) => throw UnsupportedError(
+    r'"backlink" cannot be used without a mockito fallback generator.',
+  );
+
+  @override
+  linkMany<TargetEntityT>(
+    _i4.QueryRelationToMany<_i10.NoteModel, TargetEntityT>? rel, [
+    _i4.Condition<TargetEntityT>? qc,
+  ]) => throw UnsupportedError(
+    r'"linkMany" cannot be used without a mockito fallback generator.',
+  );
+
+  @override
+  backlinkMany<SourceEntityT>(
+    _i4.QueryRelationToMany<SourceEntityT, _i10.NoteModel>? rel, [
+    _i4.Condition<SourceEntityT>? qc,
+  ]) => throw UnsupportedError(
+    r'"backlinkMany" cannot be used without a mockito fallback generator.',
+  );
 }

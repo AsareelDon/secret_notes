@@ -73,26 +73,18 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
     return MultiBlocListener(
       listeners: [
         BlocListener<CreateNoteCubit, CreateNoteState>(
+          listenWhen: (previous, current) => current is CreateNoteSuccess,
           listener: (context, state) {
             if (state is CreateNoteSuccess) {
-              context.read<GetNoteCubit>().getAllNotes();
               Navigator.pop(context);
-            } else if (state is CreateNoteFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
             }
           },
         ),
         BlocListener<EditNoteCubit, EditNoteState>(
+          listenWhen: (previous, current) => current is EditNoteLoaded,
           listener: (context, state) {
             if (state is EditNoteLoaded) {
-              context.read<GetNoteCubit>().getAllNotes();
               Navigator.pop(context);
-            } else if (state is EditNoteError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
             }
           }
         )

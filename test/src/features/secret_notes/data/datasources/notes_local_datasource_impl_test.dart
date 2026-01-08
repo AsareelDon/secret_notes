@@ -7,19 +7,34 @@ import 'package:secret_notes/src/features/secret_notes/data/datasources/notes_lo
 import 'package:secret_notes/src/features/secret_notes/data/models/note_model.dart';
 import 'notes_local_datasource_impl_test.mocks.dart';
 
-@GenerateMocks([Store, Box])
+@GenerateMocks(
+  [Store, Box, Query<NoteModel>],
+  customMocks: [
+    MockSpec<QueryBuilder<NoteModel>>(
+      unsupportedMembers: {#link, #backlink, #linkMany, #backlinkMany},
+    ),
+  ],
+)
 void main() {
   late NotesLocalDataSourceImpl dataSourceImpl;
   late MockStore mockStore;
   late MockBox<NoteModel> mockBox;
+  late MockQueryBuilder mockQueryBuilder;
+  late MockQuery<NoteModel> mockQuery;
 
   setUp(() {
     mockStore = MockStore();
     mockBox = MockBox();
-    dataSourceImpl = NotesLocalDataSourceImpl(store: mockStore, box: mockBox);
+    mockQueryBuilder = MockQueryBuilder();
+    mockQuery = MockQuery<NoteModel>();
+
+    dataSourceImpl = NotesLocalDataSourceImpl(
+      store: mockStore,
+      box: mockBox,
+    );
   });
 
-  final mockNoteObject = NoteModel(noteTitle: 'Create a mock note', noteContent: 'mockNote content', creationDate: DateTime.now());
+  final mockNoteObject = NoteModel(noteId: 1, noteTitle: 'Create a mock note', noteContent: 'mockNote content', creationDate: DateTime.now());
 
   test("should call modelBox-put when saving note", () async {
     when(mockBox.put(mockNoteObject)).thenReturn(1);
@@ -35,24 +50,53 @@ void main() {
     verify(mockBox.put(mockNoteObject)).called(1);
   });
 
-  test("should call modelBox-getAll when getting all notes", () async {
-    when(mockBox.getAll()).thenReturn([mockNoteObject]);
-    await dataSourceImpl.getSavedNotes();
-    verify(mockBox.getAll()).called(1);
-  });
+  test("should return list of note model when query finds notes", () async {
+    when(mockBox.query()).thenReturn(mockQueryBuilder);
+    when(mockQueryBuilder.order(any, flags: anyNamed('flags')))
+        .thenReturn(mockQueryBuilder);
+    when(mockQueryBuilder.build()).thenReturn(mockQuery);
+    when(mockQuery.find()).thenReturn([mockNoteObject]);
 
-  test("should throw cache-error-exception when modelBox-getAll failed", () async {
-    when(mockBox.getAll())
-        .thenThrow(CacheErrorException('Failed to get notes'));
-
-    expect(() => dataSourceImpl.getSavedNotes(), throwsA(isA<CacheErrorException>()));
-    verify(mockBox.getAll()).called(1);
-  });
-
-  test("should return list of notes when modelBox-getAll is successful", () async {
-    when(mockBox.getAll()).thenReturn([mockNoteObject]);
     final result = await dataSourceImpl.getSavedNotes();
     expect(result, [mockNoteObject]);
-    verify(mockBox.getAll()).called(1);
+    verify(mockBox.query()).called(1);
+    verify(mockQueryBuilder.build()).called(1);
+    verify(mockQuery.find()).called(1);
+  });
+
+  test("should throw cache-error-exception when find fails", () async {
+    when(mockBox.query()).thenReturn(mockQueryBuilder);
+    when(mockQueryBuilder.order(any, flags: anyNamed('flags')))
+        .thenReturn(mockQueryBuilder);
+    when(mockQueryBuilder.build()).thenReturn(mockQuery);
+    when(mockQuery.find()).thenThrow(CacheErrorException('Failed to fetch notes'));
+
+    expect(() => dataSourceImpl.getSavedNotes(), throwsA(isA<CacheErrorException>()));
+    verify(mockQuery.find()).called(1);
+  });
+
+  test("should save edited note when note does exist by noteId", () async {
+    when(mockBox.get(mockNoteObject.noteId))
+        .thenReturn(mockNoteObject);
+    when(mockBox.put(mockNoteObject)).thenReturn(1);
+    await dataSourceImpl.saveEditedNote(mockNoteObject);
+    verify(mockBox.get(mockNoteObject.noteId)).called(1);
+    verify(mockBox.put(mockNoteObject)).called(1);
+  });
+
+  test("should throw cache-error-exception when noteId does not exist", () async {
+    when(mockBox.get(mockNoteObject.noteId))
+        .thenReturn(null);
+
+    expect(() => dataSourceImpl.saveEditedNote(mockNoteObject), throwsA(isA<CacheErrorException>()));
+    verify(mockBox.get(mockNoteObject.noteId)).called(1);
+  });
+
+  test("should throw cache-error-exception when modelBox-get failed", () async {
+    when(mockBox.get(mockNoteObject.noteId))
+        .thenThrow(CacheErrorException('Failed to get note'));
+
+    expect(() => dataSourceImpl.saveEditedNote(mockNoteObject), throwsA(isA<CacheErrorException>()));
+    verify(mockBox.get(mockNoteObject.noteId)).called(1);
   });
 }

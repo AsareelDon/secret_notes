@@ -32,6 +32,7 @@ final ThemeData lightTheme = ThemeData(
     // content compose and content tile
     bodyLarge: TextStyle(fontSize: 20, color: Colors.black87),
     bodyMedium: TextStyle(fontSize: 14, color: Colors.black87),
+    bodySmall: TextStyle(fontSize: 12, color: Colors.black87),
 
     // label on primary button
     labelSmall: TextStyle(color: Color(0xFF2563EB), fontSize: 12, fontWeight: FontWeight.w500),
@@ -79,6 +80,7 @@ final ThemeData darkTheme = ThemeData(
     // content compose and content tile
     bodyLarge: TextStyle(fontSize: 20, color: Colors.white70),
     bodyMedium: TextStyle(fontSize: 14, color: Colors.white70),
+    bodySmall: TextStyle(fontSize: 12, color: Colors.white70),
 
     // label on primary button
     labelSmall: TextStyle(color: Color(0xFF2563EB), fontSize: 12, fontWeight: FontWeight.w500),

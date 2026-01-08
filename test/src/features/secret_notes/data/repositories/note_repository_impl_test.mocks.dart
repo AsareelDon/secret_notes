@@ -53,4 +53,13 @@ class MockNotesLocalDataSource extends _i1.Mock
             ),
           )
           as _i3.Future<List<_i4.NoteModel>>);
+
+  @override
+  _i3.Future<void> saveEditedNote(_i4.NoteModel? note) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveEditedNote, [note]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 }

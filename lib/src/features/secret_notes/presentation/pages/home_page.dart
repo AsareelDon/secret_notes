@@ -1,10 +1,10 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_cubit.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_cubit.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/get_note_state.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_cubit.dart';
+import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_state.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/pages/compose_note_page.dart';
-import 'package:intl/intl.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/widgets/note_tile.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
 
@@ -36,35 +36,31 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: BlocBuilder<GetNoteCubit, GetNoteState>(
-              builder: (context, state) {
-                if (state is GetNoteLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is GetNoteLoaded) {
-                  final notes = state.notes;
-                  if (notes.isEmpty) {
-                    return const Center(child: Text("No notes found"));
-                  }
-                  return ListView.builder(
-                    itemCount: state.notes.length,
-                    itemBuilder: (context, index) {
-                      final note = state.notes[index];
-                      final displayDate = DateFormat('yyyy-MM-dd – HH:mm')
-                          .format(note.lastEditDate ?? note.creationDate);
-                      return NoteTile(
-                        title: note.noteTitle,
-                        content: note.noteContent,
-                        date: displayDate,
-                      );
-                    },
-                  );
+          child: BlocBuilder<GetNoteCubit, GetNoteState>(
+            builder: (context, state) {
+              if (state is GetNoteLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is GetNoteLoaded) {
+                final notes = state.notes;
+                if (notes.isEmpty) {
+                  return const Center(child: Text("No notes found"));
                 }
-                return const SizedBox.shrink();
+                return ListView.builder(
+                  itemCount: state.notes.length,
+                  itemBuilder: (context, index) {
+                    final note = state.notes[index];
+                    final dateCreated = DateFormat('yyyy-MM-dd – HH:mm')
+                        .format(note.lastEditDate?? note.creationDate);
+                    return NoteTile(
+                      noteEntity: note,
+                      dateCreated: dateCreated,
+                    );
+                  },
+                );
               }
-            ),
-          )
+              return const SizedBox.shrink();
+            }
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -75,10 +71,10 @@ class _HomePageState extends State<HomePage> {
             await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => BlocProvider.value(
-                    value: context.read<CreateNoteCubit>(),
-                    child: ComposeNotePage(),
-                  )
+                builder: (context) => BlocProvider.value(
+                  value: context.read<CreateNoteCubit>(),
+                  child: ComposeNotePage(),
+                )
               ),
             );
           },

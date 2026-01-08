@@ -1,4 +1,3 @@
-import 'package:objectbox/objectbox.dart';
 import 'package:secret_notes/objectbox.g.dart';
 import 'package:secret_notes/src/core/error/exceptions.dart';
 import 'package:secret_notes/src/core/utils/app_logger.dart';
@@ -40,6 +39,23 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
     } catch (error, stackTrace) {
       devLogger.error('Error fetching notes: $error', error, stackTrace);
       throw CacheErrorException('Failed to fetch notes');
+    }
+  }
+
+  @override
+  Future<void> saveEditedNote(NoteModel note) async {
+    try {
+      final NoteModel? existingNote = noteModelBox.get(note.noteId);
+
+      if (existingNote != null) {
+        noteModelBox.put(note);
+        devLogger.info('Note updated successfully!: ${note.noteTitle}');
+      } else {
+        throw CacheErrorException('Note not found');
+      }
+    } catch (error, stackTrace) {
+      devLogger.error('Error editing note: $error', error, stackTrace);
+      throw CacheErrorException('Failed to edit notes');
     }
   }
 }

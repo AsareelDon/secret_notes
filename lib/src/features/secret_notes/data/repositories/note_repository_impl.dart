@@ -59,4 +59,28 @@ class NoteRepositoryImpl implements NoteRepository{
       return Left(CacheFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failures, NoteEntity>> editNoteById(NoteEntity note) async {
+    try {
+      final createdNotes = NoteModel(
+          noteId: note.noteId!,
+          noteTitle: note.noteTitle,
+          noteContent: note.noteContent,
+          creationDate: note.creationDate,
+          lastEditDate: note.lastEditDate
+      );
+      await notesLocalDataSource.saveEditedNote(createdNotes);
+      devLogger.info("Note was saved!: $createdNotes");
+
+      return Right(note);
+
+    } on CacheErrorException catch (e) {
+      devLogger.error("Error on saving note: ${e.message}");
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      devLogger.error("Error saving note: $e}");
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
 }

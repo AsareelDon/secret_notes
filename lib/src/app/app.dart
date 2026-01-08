@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Notes',
       theme: lightTheme,
       darkTheme: darkTheme,
+      debugShowCheckedModeBanner: false,
       home: HomePage(title: 'Secret Notes'),
     );
   }

@@ -58,4 +58,21 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
       throw CacheErrorException('Failed to edit notes');
     }
   }
+
+  @override
+  Future<void> deleteNoteById(int noteId) async {
+    try {
+      final NoteModel? note = noteModelBox.get(noteId);
+
+      if (note != null) {
+        noteModelBox.remove(noteId);
+        devLogger.info('Note deleted successfully!: ${note.noteTitle}');
+      } else {
+        throw CacheErrorException('Note not found');
+      }
+    } catch (error, stackTrace) {
+      devLogger.error('Error deleting note: $error', error, stackTrace);
+      throw CacheErrorException('Failed to delete notes');
+    }
+  }
 }

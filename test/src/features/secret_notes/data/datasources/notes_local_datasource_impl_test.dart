@@ -36,13 +36,13 @@ void main() {
 
   final mockNoteObject = NoteModel(noteId: 1, noteTitle: 'Create a mock note', noteContent: 'mockNote content', creationDate: DateTime.now());
 
-  test("should call modelBox-put when saving note", () async {
+  test("on saveCreatedNote, should call modelBox-put when saving note", () async {
     when(mockBox.put(mockNoteObject)).thenReturn(1);
     await dataSourceImpl.saveCreatedNote(mockNoteObject);
     verify(mockBox.put(mockNoteObject)).called(1);
   });
   
-  test("should throw cache-error-exception when modelBox-put failed", () async {
+  test("on saveCreatedNote, should throw cache-error-exception when modelBox-put failed", () async {
     when(mockBox.put(mockNoteObject))
         .thenThrow(CacheErrorException('Failed to save notes'));
 
@@ -50,7 +50,7 @@ void main() {
     verify(mockBox.put(mockNoteObject)).called(1);
   });
 
-  test("should return list of note model when query finds notes", () async {
+  test("on getSavedNotes, should return list of note model when query finds notes", () async {
     when(mockBox.query()).thenReturn(mockQueryBuilder);
     when(mockQueryBuilder.order(any, flags: anyNamed('flags')))
         .thenReturn(mockQueryBuilder);
@@ -64,7 +64,7 @@ void main() {
     verify(mockQuery.find()).called(1);
   });
 
-  test("should throw cache-error-exception when find fails", () async {
+  test("on getSavedNotes, should throw cache-error-exception when find fails", () async {
     when(mockBox.query()).thenReturn(mockQueryBuilder);
     when(mockQueryBuilder.order(any, flags: anyNamed('flags')))
         .thenReturn(mockQueryBuilder);
@@ -75,7 +75,7 @@ void main() {
     verify(mockQuery.find()).called(1);
   });
 
-  test("should save edited note when note does exist by noteId", () async {
+  test("on saveEditedNote, should save edited note when note does exist by noteId", () async {
     when(mockBox.get(mockNoteObject.noteId))
         .thenReturn(mockNoteObject);
     when(mockBox.put(mockNoteObject)).thenReturn(1);
@@ -84,7 +84,7 @@ void main() {
     verify(mockBox.put(mockNoteObject)).called(1);
   });
 
-  test("should throw cache-error-exception when noteId does not exist", () async {
+  test("on saveEditedNote, should throw cache-error-exception when noteId does not exist", () async {
     when(mockBox.get(mockNoteObject.noteId))
         .thenReturn(null);
 
@@ -92,11 +92,37 @@ void main() {
     verify(mockBox.get(mockNoteObject.noteId)).called(1);
   });
 
-  test("should throw cache-error-exception when modelBox-get failed", () async {
+  test("on saveEditedNote, should throw cache-error-exception when modelBox-get failed", () async {
     when(mockBox.get(mockNoteObject.noteId))
         .thenThrow(CacheErrorException('Failed to get note'));
 
     expect(() => dataSourceImpl.saveEditedNote(mockNoteObject), throwsA(isA<CacheErrorException>()));
+    verify(mockBox.get(mockNoteObject.noteId)).called(1);
+  });
+
+  test("on deleteNoteById, should delete note when note does exist by noteId", () async {
+    when(mockBox.get(mockNoteObject.noteId))
+        .thenReturn(mockNoteObject);
+    when(mockBox.remove(mockNoteObject.noteId))
+        .thenReturn(true);
+    await dataSourceImpl.deleteNoteById(mockNoteObject.noteId);
+    verify(mockBox.get(mockNoteObject.noteId)).called(1);
+    verify(mockBox.remove(mockNoteObject.noteId)).called(1);
+  });
+
+  test("on deleteNoteById, should throw cache-error-exception when noteId does not exist", () async {
+    when(mockBox.get(mockNoteObject.noteId))
+        .thenReturn(null);
+
+    expect(() => dataSourceImpl.deleteNoteById(mockNoteObject.noteId), throwsA(isA<CacheErrorException>()));
+    verify(mockBox.get(mockNoteObject.noteId)).called(1);
+  });
+
+  test("on deleteNoteById, should throw cache-error-exception when modelBox-get failed", () async {
+    when(mockBox.get(mockNoteObject.noteId))
+        .thenThrow(CacheErrorException('Failed to get note'));
+
+    expect(() => dataSourceImpl.deleteNoteById(mockNoteObject.noteId), throwsA(isA<CacheErrorException>()));
     verify(mockBox.get(mockNoteObject.noteId)).called(1);
   });
 }

@@ -49,11 +49,12 @@ class _HomePageState extends State<HomePage> {
                   itemCount: state.notes.length,
                   itemBuilder: (context, index) {
                     final note = state.notes[index];
-                    final dateCreated = DateFormat('yyyy-MM-dd – HH:mm')
+                    final dateCreated = DateFormat('MM/dd/yyyy')
                         .format(note.lastEditDate?? note.creationDate);
                     return NoteTile(
                       noteEntity: note,
                       dateCreated: dateCreated,
+                      noteTileIndex: index,
                     );
                   },
                 );

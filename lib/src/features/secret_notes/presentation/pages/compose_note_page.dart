@@ -5,7 +5,6 @@ import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create/create_note_state.dart';
 import 'package:secret_notes/src/core/ui/container_wrapper.dart';
 import 'package:secret_notes/src/core/ui/primary_app_bar.dart';
-import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/get_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_state.dart';
 
@@ -73,26 +72,18 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
     return MultiBlocListener(
       listeners: [
         BlocListener<CreateNoteCubit, CreateNoteState>(
+          listenWhen: (previous, current) => current is CreateNoteSuccess,
           listener: (context, state) {
             if (state is CreateNoteSuccess) {
-              context.read<GetNoteCubit>().getAllNotes();
               Navigator.pop(context);
-            } else if (state is CreateNoteFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
             }
           },
         ),
         BlocListener<EditNoteCubit, EditNoteState>(
+          listenWhen: (previous, current) => current is EditNoteLoaded,
           listener: (context, state) {
             if (state is EditNoteLoaded) {
-              context.read<GetNoteCubit>().getAllNotes();
               Navigator.pop(context);
-            } else if (state is EditNoteError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
             }
           }
         )

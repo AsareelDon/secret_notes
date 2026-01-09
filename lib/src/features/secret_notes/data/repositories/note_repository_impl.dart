@@ -83,4 +83,20 @@ class NoteRepositoryImpl implements NoteRepository{
       return Left(CacheFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failures, int>> deleteNoteById(int noteId) async {
+    try {
+      await notesLocalDataSource.deleteNoteById(noteId);
+      devLogger.info("Note was deleted! ID: $noteId");
+
+      return Right(noteId);
+    } on CacheErrorException catch (e) {
+      devLogger.error("Error on deleting note: ${e.message}");
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      devLogger.error("Error deleting note: $e");
+      return Left(CacheFailure(message: e.toString()));
+    }
+  }
 }

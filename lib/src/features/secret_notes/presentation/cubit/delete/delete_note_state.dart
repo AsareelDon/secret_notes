@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:secret_notes/src/features/secret_notes/data/models/DTOs/response/note_response.dart';
 
 class DeleteNoteState extends Equatable {
   const DeleteNoteState();
@@ -8,17 +7,25 @@ class DeleteNoteState extends Equatable {
   List<Object> get props => [];
 }
 
-class DeleteNoteInitial extends DeleteNoteState {}
-
-class DeleteNoteLoading extends DeleteNoteState {}
-
-class DeleteNoteSuccess extends DeleteNoteState {
-  final NoteResponse noteResponse;
-
-  const DeleteNoteSuccess({required this.noteResponse});
+class DeleteNoteInitial extends DeleteNoteState {
+  const DeleteNoteInitial();
 
   @override
-  List<Object> get props => [noteResponse];
+  List<Object> get props => [];
+}
+
+class DeleteNoteLoading extends DeleteNoteState {
+  const DeleteNoteLoading();
+
+  @override
+  List<Object> get props => [];
+}
+
+class DeleteNoteSuccess extends DeleteNoteState {
+  const DeleteNoteSuccess();
+
+  @override
+  List<Object> get props => [];
 }
 
 class DeleteNoteFailure extends DeleteNoteState {

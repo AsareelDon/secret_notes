@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:secret_notes/src/core/error/failures.dart';
-import 'package:secret_notes/src/features/secret_notes/data/models/DTOs/response/note_response.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/usecases/delete_note_by_id_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/delete/delete_note_cubit.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/delete/delete_note_state.dart';
@@ -19,17 +18,13 @@ void main() {
     deleteNoteCubit = DeleteNoteCubit(deleteNoteByIdUseCase: mockDeleteNoteByIdUseCase);
   });
 
-  final noteResponse = NoteResponse(
-      isSuccess: true,
-      message: "Note removed successfully",
-  );
 
-  test('initial state should be DeleteNoteInitial', () {
+  test('GIVEN [DeleteNoteCubit] is initialized, WHEN no action is taken, THEN initial state should be [DeleteNoteInitial]', () {
     expect(deleteNoteCubit.state, DeleteNoteInitial());
   });
 
   group('DeleteNoteCubit', () {
-    test('should emit [DeleteNoteLoading, DeleteNoteSuccess] when DeleteNoteByIdUseCase is called successfully', () async {
+    test('GIVEN [deleteNoteById] succeeds, WHEN [deleteNoteById] is called, THEN it should emit loading and success states', () async {
       when(mockDeleteNoteByIdUseCase.call(DeleteNoteParams(noteId: 1)))
           .thenAnswer((_) async => const Right(1));
 
@@ -37,10 +32,10 @@ void main() {
 
       expect(deleteNoteCubit.state, DeleteNoteLoading());
       await untilCalled(mockDeleteNoteByIdUseCase.call(DeleteNoteParams(noteId: 1)));
-      expect(deleteNoteCubit.state, DeleteNoteSuccess(noteResponse: noteResponse));
+      expect(deleteNoteCubit.state, DeleteNoteSuccess());
     });
 
-    test('should emit [DeleteNoteLoading, DeleteNoteFailure] when DeleteNoteByIdUseCase is called unsuccessfully', () async {
+    test('GIVEN [deleteNoteById] fails, WHEN [deleteNoteById] is called, THEN it should emit loading and failure states', () async {
       when(mockDeleteNoteByIdUseCase.call(any))
           .thenAnswer((_) async => Left(CacheFailure(message: 'Failed to remove note')));
 

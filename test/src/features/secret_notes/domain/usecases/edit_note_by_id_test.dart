@@ -27,7 +27,7 @@ void main() {
   );
 
 
-  test('should return Success(Right) edit-notes', () async {
+  test('GIVEN note update succeeds, WHEN [EditNoteByIdUseCase] is called, THEN it should return the updated note', () async {
     when(mockNoteRepository.editNoteById(editedNotes))
         .thenAnswer((_) async => Right(editedNotes));
 
@@ -42,16 +42,16 @@ void main() {
     verifyNoMoreInteractions(mockNoteRepository);
   });
 
-  test('should return Failure(Left) when updating note failed', () async {
+  test('GIVEN note update fails, WHEN [EditNoteByIdUseCase] is called, THEN it should return a Failure', () async {
     when(mockNoteRepository.editNoteById(editedNotes))
-        .thenAnswer((_) async => Left(ServerFailure(message: 'Failed to update note')));
+        .thenAnswer((_) async => Left(SavingNoteFailure(message: 'Failed to update note')));
 
     final result = await editNoteByIdUseCase.call(EditNoteParams(noteEntity: editedNotes));
 
     expect(result, isA<Left<Failures, NoteEntity>>());
     result.fold(
         (failure) {
-          expect(failure, isA<ServerFailure>());
+          expect(failure, isA<SavingNoteFailure>());
           expect(failure.message, 'Failed to update note');
         },
         (_) => fail("Expected Left but got Right")

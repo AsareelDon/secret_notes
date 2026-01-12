@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
-import 'package:secret_notes/src/features/secret_notes/data/models/DTOs/response/note_response.dart';
+import 'package:injectable/injectable.dart';
+import 'package:secret_notes/src/core/error/failures.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/usecases/edit_note_by_id_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_state.dart';
 
+@injectable
 class EditNoteCubit extends Cubit<EditNoteState> {
-  late final EditNoteByIdUseCase editNoteByIdUseCase;
+  final EditNoteByIdUseCase editNoteByIdUseCase;
 
   EditNoteCubit({required this.editNoteByIdUseCase}) : super(EditNoteInitial());
 
@@ -14,15 +16,8 @@ class EditNoteCubit extends Cubit<EditNoteState> {
     final result = await editNoteByIdUseCase.call(EditNoteParams(noteEntity: noteEntity));
 
     result.fold(
-      (failure) => emit(EditNoteError(error: failure.message)),
-      (success) {
-        final noteResponse = NoteResponse(
-          isSuccess: true,
-          message: 'Note updated successfully',
-          noteData: noteEntity,
-        );
-        emit(EditNoteLoaded(noteResponse: noteResponse));
-      }
+      (failure) => emit(EditNoteError(savingNoteFailure:SavingNoteFailure(message: failure.message) )),
+      (success) => emit(EditNoteLoaded()),
     );
   }
 }

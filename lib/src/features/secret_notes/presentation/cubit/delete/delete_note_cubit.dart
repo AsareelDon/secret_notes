@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:secret_notes/src/features/secret_notes/data/models/DTOs/response/note_response.dart';
+import 'package:injectable/injectable.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/usecases/delete_note_by_id_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/delete/delete_note_state.dart';
 
+@injectable
 class DeleteNoteCubit extends Cubit<DeleteNoteState> {
-  late final DeleteNoteByIdUseCase deleteNoteByIdUseCase;
+  final DeleteNoteByIdUseCase deleteNoteByIdUseCase;
 
   DeleteNoteCubit({required this.deleteNoteByIdUseCase}) : super(DeleteNoteInitial());
 
@@ -14,13 +15,7 @@ class DeleteNoteCubit extends Cubit<DeleteNoteState> {
 
     result.fold(
       (failure) => emit(DeleteNoteFailure(error: failure.message)),
-      (data) {
-        final noteResponse = NoteResponse(
-          isSuccess: true,
-          message: 'Note removed successfully',
-        );
-        emit(DeleteNoteSuccess(noteResponse: noteResponse));
-      }
+      (data) => emit(DeleteNoteSuccess())
     );
   }
 }

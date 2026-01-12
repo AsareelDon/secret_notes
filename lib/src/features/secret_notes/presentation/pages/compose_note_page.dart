@@ -47,21 +47,15 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
 
   void _saveNote() {
     if (widget.noteEntity != null) {
-      final editedNote = NoteEntity(
-        noteId: widget.noteEntity?.noteId,
-        noteTitle: _titleController.text.trim(),
-        noteContent: _contentController.text.trim(),
-        creationDate: widget.noteEntity!.creationDate,
-        lastEditDate: DateTime.now()
+      final editedNote = widget.noteEntity!.update(
+        title: _titleController.text,
+        content: _contentController.text,
       );
       context.read<EditNoteCubit>().editNoteById(editedNote);
     } else {
-      final createdNote = NoteEntity(
-        noteId: widget.noteEntity?.noteId,
-        noteTitle: _titleController.text.trim(),
-        noteContent: _contentController.text.trim(),
-        creationDate: DateTime.now(),
-        lastEditDate: DateTime.now()
+      final createdNote = NoteEntity.fromInput(
+        title: _titleController.text,
+        content: _contentController.text,
       );
       context.read<CreateNoteCubit>().createNote(createdNote);
     }

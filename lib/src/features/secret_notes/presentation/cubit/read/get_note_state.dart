@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:secret_notes/src/core/error/failures.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 
 abstract class GetNoteState extends Equatable {
@@ -8,8 +9,18 @@ abstract class GetNoteState extends Equatable {
   List<Object> get props => [];
 }
 
-class GetNoteInitial extends GetNoteState {}
-class GetNoteLoading extends GetNoteState {}
+class GetNoteInitial extends GetNoteState {
+  const GetNoteInitial();
+
+  @override
+  List<Object> get props => [];
+}
+class GetNoteLoading extends GetNoteState {
+  const GetNoteLoading();
+
+  @override
+  List<Object> get props => [];
+}
 
 class GetNoteLoaded extends GetNoteState {
   final List<NoteEntity> notes;
@@ -21,10 +32,10 @@ class GetNoteLoaded extends GetNoteState {
 }
 
 class GetNoteError extends GetNoteState {
-  final String message;
+  final CacheFailure cacheFailure;
 
-  const GetNoteError({required this.message});
+  const GetNoteError({required this.cacheFailure});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [cacheFailure];
 }

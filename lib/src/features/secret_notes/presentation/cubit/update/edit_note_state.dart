@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:secret_notes/src/core/error/failures.dart';
 import 'package:secret_notes/src/features/secret_notes/data/models/DTOs/response/note_response.dart';
 
 abstract class EditNoteState extends Equatable {
@@ -8,22 +9,31 @@ abstract class EditNoteState extends Equatable {
   List<Object> get props => [];
 }
 
-class EditNoteInitial extends EditNoteState {}
-class EditNoteLoading extends EditNoteState {}
-
-class EditNoteLoaded extends EditNoteState {
-  final NoteResponse noteResponse;
-
-  const EditNoteLoaded({required this.noteResponse});
+class EditNoteInitial extends EditNoteState {
+  const EditNoteInitial();
 
   @override
-  List<Object> get props => [noteResponse];
+  List<Object> get props => [];
+}
+class EditNoteLoading extends EditNoteState {
+  const EditNoteLoading();
+
+  @override
+  List<Object> get props => [];
+}
+
+class EditNoteLoaded extends EditNoteState {
+  const EditNoteLoaded();
+
+  @override
+  List<Object> get props => [];
 }
 
 class EditNoteError extends EditNoteState {
-  final String error;
-  const EditNoteError({required this.error});
+  final SavingNoteFailure savingNoteFailure;
+
+  const EditNoteError({required this.savingNoteFailure});
 
   @override
-  List<Object> get props => [error];
+  List<Object> get props => [savingNoteFailure];
 }

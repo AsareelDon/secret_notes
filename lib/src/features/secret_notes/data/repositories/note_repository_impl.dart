@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
 import 'package:secret_notes/src/core/error/exceptions.dart';
 import 'package:secret_notes/src/core/error/failures.dart';
 import 'package:secret_notes/src/core/utils/app_logger.dart';
@@ -7,6 +8,7 @@ import 'package:secret_notes/src/features/secret_notes/data/models/note_model.da
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/repository/note_repository.dart';
 
+@LazySingleton(as: NoteRepository)
 class NoteRepositoryImpl implements NoteRepository{
   final NotesLocalDataSource notesLocalDataSource;
 

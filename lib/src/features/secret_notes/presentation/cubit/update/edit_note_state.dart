@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:secret_notes/src/core/error/failures.dart';
-import 'package:secret_notes/src/features/secret_notes/data/models/DTOs/response/note_response.dart';
 
 abstract class EditNoteState extends Equatable {
   const EditNoteState();

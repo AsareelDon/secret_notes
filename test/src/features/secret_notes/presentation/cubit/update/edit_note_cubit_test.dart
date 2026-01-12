@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:secret_notes/src/core/error/failures.dart';
-import 'package:secret_notes/src/features/secret_notes/data/models/DTOs/response/note_response.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/usecases/edit_note_by_id_usecase.dart';
 import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update/edit_note_cubit.dart';
@@ -26,12 +25,6 @@ void main() {
     noteTitle: 'Test Note',
     noteContent: 'Test Content',
     creationDate: DateTime.now(),
-  );
-
-  final noteResponse = NoteResponse(
-      isSuccess: true,
-      message: "Note updated successfully",
-      noteData: noteEntity
   );
 
   test('GIVEN [EditNoteCubit] is initialized, WHEN no action is taken, THEN initial state should be [EditNoteInitial]', () {

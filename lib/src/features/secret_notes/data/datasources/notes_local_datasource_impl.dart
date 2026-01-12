@@ -82,13 +82,16 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
   Future<void> saveEditedNote(NoteModel note) async {
     try {
       final NoteModel? existingNote = noteModelBox.get(note.noteId);
-
-      if (existingNote != null) {
-        noteModelBox.put(note);
-        devLogger.info('Note updated successfully!: ${note.noteTitle}');
-      } else {
+      if (existingNote == null) {
+        devLogger.error('Note not found: ID=${note.noteId}');
         throw ResourceNotFoundErrorException('Note not found');
       }
+
+      noteModelBox.put(note);
+      devLogger.info('Note updated successfully!: ${note.noteTitle}');
+
+    } on ResourceNotFoundErrorException catch (error) {
+      throw ResourceNotFoundErrorException(error.message);
     } catch (error, stackTrace) {
       devLogger.error('Error editing note: $error', error, stackTrace);
       throw CacheErrorException('Failed to edit notes');
@@ -102,14 +105,17 @@ class NotesLocalDataSourceImpl implements NotesLocalDataSource {
   @override
   Future<void> deleteNoteById(int noteId) async {
     try {
-      final NoteModel? note = noteModelBox.get(noteId);
-
-      if (note != null) {
-        noteModelBox.remove(noteId);
-        devLogger.info('Note deleted successfully!: ${note.noteTitle}');
-      } else {
+      final NoteModel? existingNote = noteModelBox.get(noteId);
+      if (existingNote == null) {
+        devLogger.error('Note not found: ID=$noteId');
         throw ResourceNotFoundErrorException('Note not found');
       }
+
+      noteModelBox.remove(noteId);
+      devLogger.info('Note deleted successfully!: ${existingNote.noteTitle}');
+
+    } on ResourceNotFoundErrorException catch (error) {
+      throw ResourceNotFoundErrorException(error.message);
     } catch (error, stackTrace) {
       devLogger.error('Error deleting note: $error', error, stackTrace);
       throw CacheErrorException('Failed to delete notes');

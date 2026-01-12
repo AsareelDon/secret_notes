@@ -48,7 +48,7 @@ class NoteRepositoryImpl implements NoteRepository {
 
     } on CacheErrorException catch (e) {
       devLogger.error("Error on saving note: ${e.message}");
-      return Left(CacheFailure(message: e.message));
+      return Left(SavingNoteFailure(message: e.message));
     } catch (e) {
       devLogger.error("Error saving note: $e");
       return Left(CacheFailure(message: e.toString()));
@@ -86,7 +86,11 @@ class NoteRepositoryImpl implements NoteRepository {
 
   /// Updates an existing note by its ID.
   ///
-  /// Returns [Right<NoteEntity>] on success or [Left<CacheFailure>] on error.
+  /// Returns [Right<NoteEntity>] on success
+  /// or
+  ///   - [Left<SavingNoteFailure>]
+  ///   - [Left<ResourceNotFoundFailure>]
+  /// on error.
   @override
   Future<Either<Failures, NoteEntity>> editNoteById(NoteEntity note) async {
     try {
@@ -102,19 +106,25 @@ class NoteRepositoryImpl implements NoteRepository {
 
       return Right(note);
 
-    } on CacheErrorException catch (e) {
-      devLogger.error("Error on saving note: ${e.message}");
-      return Left(CacheFailure(message: e.message));
-    } catch (e) {
-      devLogger.error("Error saving note: $e");
-      return Left(CacheFailure(message: e.toString()));
+    } on CacheErrorException catch (error) {
+      devLogger.error("Error on saving note: ${error.message}");
+      return Left(SavingNoteFailure(message: error.message));
+    } on ResourceNotFoundErrorException catch (error) {
+      devLogger.error("Note not found: ${error.message}");
+      return Left(ResourceNotFoundFailure(message: error.message));
+    } catch (error) {
+      devLogger.error("Error saving note: $error");
+      return Left(SavingNoteFailure(message: error.toString()));
     }
   }
 
   /// Deletes a note by its ID.
   ///
   /// Returns [Right<int>] containing the deleted note ID on success,
-  /// or [Left<CacheFailure>] on error.
+  /// or
+  ///   - [Left<NoteDeletionFailure>]
+  ///   - [Left<ResourceNotFoundFailure>]
+  /// on error.
   @override
   Future<Either<Failures, int>> deleteNoteById(int noteId) async {
     try {
@@ -123,12 +133,15 @@ class NoteRepositoryImpl implements NoteRepository {
 
       return Right(noteId);
 
-    } on CacheErrorException catch (e) {
-      devLogger.error("Error on deleting note: ${e.message}");
-      return Left(CacheFailure(message: e.message));
-    } catch (e) {
-      devLogger.error("Error deleting note: $e");
-      return Left(CacheFailure(message: e.toString()));
+    } on CacheErrorException catch (error) {
+      devLogger.error("Error on deleting note: ${error.message}");
+      return Left(NoteDeletionFailure(message: error.message));
+    } on ResourceNotFoundErrorException catch (error) {
+      devLogger.error("Note not found: ${error.message}");
+      return Left(ResourceNotFoundFailure(message: error.message));
+    } catch (error) {
+      devLogger.error("Error deleting note: $error");
+      return Left(NoteDeletionFailure(message: error.toString()));
     }
   }
 }

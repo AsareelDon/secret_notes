@@ -47,3 +47,8 @@ class SavingNoteFailure extends Failures {
   /// Creates a [SavingNoteFailure] with the given [message].
   const SavingNoteFailure({required super.message});
 }
+
+class NoteDeletionFailure extends Failures {
+  /// Creates a [NoteDeletionFailure] with the given [message].
+  const NoteDeletionFailure({required super.message});
+}

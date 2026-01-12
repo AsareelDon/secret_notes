@@ -8,13 +8,30 @@ import 'package:secret_notes/src/features/secret_notes/data/models/note_model.da
 import 'package:secret_notes/src/features/secret_notes/domain/entities/note_entity.dart';
 import 'package:secret_notes/src/features/secret_notes/domain/repository/note_repository.dart';
 
+/// This repository handles all note-related operations in the domain layer,
+/// including creating, fetching, editing, and deleting notes.
+///
+/// Errors from the data layer are caught and mapped to [Failures] using
+/// `Either<Failures, T>` to safely expose results to the domain/presentation layers.
+///
+/// This class is registered as a **lazy singleton** via Injectable, ensuring
+/// a single instance is shared across the app.
 @LazySingleton(as: NoteRepository)
-class NoteRepositoryImpl implements NoteRepository{
+class NoteRepositoryImpl implements NoteRepository {
+  /// Local data source responsible for direct database operations.
   final NotesLocalDataSource notesLocalDataSource;
 
-  NoteRepositoryImpl({required this.notesLocalDataSource});
+  /// Logger instance for debugging and error tracking.
   final devLogger = DevLogger.singleton;
 
+  /// Creates a [NoteRepositoryImpl] with the given [notesLocalDataSource].
+  ///
+  /// [notesLocalDataSource] is automatically provided by Injectable.
+  NoteRepositoryImpl({required this.notesLocalDataSource});
+
+  /// Creates a new note and saves it via [NotesLocalDataSource].
+  ///
+  /// Returns [Right<NoteEntity>] on success or [Left<CacheFailure>] on error.
   @override
   Future<Either<Failures, NoteEntity>> createNote(NoteEntity note) async {
     try {
@@ -22,7 +39,7 @@ class NoteRepositoryImpl implements NoteRepository{
         noteTitle: note.noteTitle,
         noteContent: note.noteContent,
         creationDate: note.creationDate,
-        lastEditDate: note.lastEditDate
+        lastEditDate: note.lastEditDate,
       );
       await notesLocalDataSource.saveCreatedNote(createdNotes);
       devLogger.info("Note was saved!: $createdNotes");
@@ -33,11 +50,15 @@ class NoteRepositoryImpl implements NoteRepository{
       devLogger.error("Error on saving note: ${e.message}");
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      devLogger.error("Error saving note: $e}");
+      devLogger.error("Error saving note: $e");
       return Left(CacheFailure(message: e.toString()));
     }
   }
 
+  /// Retrieves all notes from the local data source.
+  ///
+  /// Converts [NoteModel] instances to [NoteEntity] for the domain layer.
+  /// Returns [Right<List<NoteEntity>>] on success or [Left<CacheFailure>] on error.
   @override
   Future<Either<Failures, List<NoteEntity>>> getAllNotes() async {
     try {
@@ -48,11 +69,12 @@ class NoteRepositoryImpl implements NoteRepository{
         noteTitle: note.noteTitle,
         noteContent: note.noteContent,
         creationDate: note.creationDate,
-        lastEditDate: note.lastEditDate
+        lastEditDate: note.lastEditDate,
       )).toList();
 
       devLogger.info("All notes were fetched! Count: ${notesList.length}");
       return Right(notesList);
+
     } on CacheErrorException catch (e) {
       devLogger.error("Error on fetching notes: ${e.message}");
       return Left(CacheFailure(message: e.message));
@@ -62,15 +84,18 @@ class NoteRepositoryImpl implements NoteRepository{
     }
   }
 
+  /// Updates an existing note by its ID.
+  ///
+  /// Returns [Right<NoteEntity>] on success or [Left<CacheFailure>] on error.
   @override
   Future<Either<Failures, NoteEntity>> editNoteById(NoteEntity note) async {
     try {
       final createdNotes = NoteModel(
-          noteId: note.noteId!,
-          noteTitle: note.noteTitle,
-          noteContent: note.noteContent,
-          creationDate: note.creationDate,
-          lastEditDate: note.lastEditDate
+        noteId: note.noteId!,
+        noteTitle: note.noteTitle,
+        noteContent: note.noteContent,
+        creationDate: note.creationDate,
+        lastEditDate: note.lastEditDate,
       );
       await notesLocalDataSource.saveEditedNote(createdNotes);
       devLogger.info("Note was saved!: $createdNotes");
@@ -81,11 +106,15 @@ class NoteRepositoryImpl implements NoteRepository{
       devLogger.error("Error on saving note: ${e.message}");
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      devLogger.error("Error saving note: $e}");
+      devLogger.error("Error saving note: $e");
       return Left(CacheFailure(message: e.toString()));
     }
   }
 
+  /// Deletes a note by its ID.
+  ///
+  /// Returns [Right<int>] containing the deleted note ID on success,
+  /// or [Left<CacheFailure>] on error.
   @override
   Future<Either<Failures, int>> deleteNoteById(int noteId) async {
     try {
@@ -93,6 +122,7 @@ class NoteRepositoryImpl implements NoteRepository{
       devLogger.info("Note was deleted! ID: $noteId");
 
       return Right(noteId);
+
     } on CacheErrorException catch (e) {
       devLogger.error("Error on deleting note: ${e.message}");
       return Left(CacheFailure(message: e.message));

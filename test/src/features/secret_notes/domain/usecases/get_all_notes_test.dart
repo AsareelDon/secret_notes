@@ -65,11 +65,11 @@ void main() {
 
   test('should return a failure when repository call fails', () async {
     when(mockNoteRepository.getAllNotes())
-        .thenAnswer((_) async => Left(CacheFailure(message: 'There are no notes.')));
+        .thenAnswer((_) async => Left(Failures.cache(message: 'There are no notes.')));
 
     final result = await useCase(NoParams());
 
-    expect(result, Left(CacheFailure(message: 'There are no notes.')));
+    expect(result, Left(Failures.cache(message: 'There are no notes.')));
     expect(result, isA<Left<Failures, List<NoteEntity>>>());
     result.fold(
       (failure) {

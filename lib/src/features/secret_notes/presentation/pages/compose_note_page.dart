@@ -77,13 +77,16 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
           }
         ),
         BlocListener<EditNoteCubit, EditNoteState>(
-          listenWhen: (previous, current) => current is EditNoteLoaded,
           listener: (context, state) {
-            if (state is EditNoteLoaded) {
-              Navigator.pop(context);
-            }
+            state.maybeWhen(
+              successOnEditNotes: (isSuccess) {
+                if (isSuccess) {
+                  Navigator.pop(context);
+                }
+              }, orElse: () {  },
+            );
           }
-        )
+        ),
       ],
       child: _noteWidgetBody(context)
     );

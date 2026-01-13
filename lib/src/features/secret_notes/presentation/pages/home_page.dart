@@ -54,22 +54,28 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
               ),
-              BlocListener<EditNoteCubit, EditNoteState>(
-                listenWhen: (previous, current) => current is EditNoteLoaded,
+              BlocListener<DeleteNoteCubit, DeleteNoteState>(
                 listener: (context, state) {
-                  if (state is EditNoteLoaded) {
-                    context.read<GetNoteCubit>().getAllNotes();
-                  }
+                  state.maybeWhen(
+                    successOnDeleteNotes: (isSuccess) {
+                      if (isSuccess) {
+                        context.read<GetNoteCubit>().getAllNotes();
+                      }
+                    }, orElse: () {  },
+                  );
                 }
               ),
-              BlocListener<DeleteNoteCubit, DeleteNoteState>(
-                listenWhen: (previous, current) => current is DeleteNoteSuccess,
+              BlocListener<EditNoteCubit, EditNoteState>(
                 listener: (context, state) {
-                  if (state is DeleteNoteSuccess) {
-                    context.read<GetNoteCubit>().getAllNotes();
-                  }
+                  state.maybeWhen(
+                    successOnEditNotes: (isSuccess) {
+                      if (isSuccess) {
+                        context.read<GetNoteCubit>().getAllNotes();
+                      }
+                    }, orElse: () {  },
+                  );
                 }
-              )
+              ),
             ],
             child: BlocBuilder<GetNoteCubit, GetNoteState>(
               builder: (context, state) {

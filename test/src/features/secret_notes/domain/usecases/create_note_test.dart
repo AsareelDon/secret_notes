@@ -28,10 +28,8 @@ void main() {
   final params = NoteParams(noteEntity: createdNotes);
   
   test("GIVEN note creation fails, WHEN [CreateNoteUseCase] is called, THEN it should return a Failure", () async {
-    final failure = SavingNoteFailure(message: "Failed to create note");
-
     when(mockNoteRepository.createNote(createdNotes))
-        .thenAnswer((_) async => Left(failure));
+        .thenAnswer((_) async => Left(Failures.savingNote(message: "Failed to create note")));
 
     final result = await useCase.call(params);
 

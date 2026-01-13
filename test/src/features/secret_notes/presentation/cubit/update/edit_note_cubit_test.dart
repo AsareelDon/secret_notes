@@ -28,7 +28,7 @@ void main() {
   );
 
   test('GIVEN [EditNoteCubit] is initialized, WHEN no action is taken, THEN initial state should be [EditNoteInitial]', () {
-    expect(editNoteCubit.state, EditNoteInitial());
+    expect(editNoteCubit.state, EditNoteState.initialNotes());
   });
 
   group('EditNoteCubit', () {
@@ -38,21 +38,21 @@ void main() {
 
       editNoteCubit.editNoteById(noteEntity);
 
-      expect(editNoteCubit.state, EditNoteLoading());
+      expect(editNoteCubit.state, EditNoteState.loadingNotes());
       await untilCalled(mockEditNoteByIdUseCase.call(EditNoteParams(noteEntity: noteEntity)));
 
-      expect(editNoteCubit.state, EditNoteLoaded());
+      expect(editNoteCubit.state, EditNoteState.successOnEditNotes(isSuccess: true));
     });
 
     test('GIVEN [editNoteById] fails, WHEN [editNoteById] is called, THEN it should emit loading and error states', () async {
       when(mockEditNoteByIdUseCase.call(EditNoteParams(noteEntity: noteEntity)))
-          .thenAnswer((_) async => Left(SavingNoteFailure(message: "Error on updating note")));
+          .thenAnswer((_) async => Left(Failures.savingNote(message: "Error on updating note")));
 
       editNoteCubit.editNoteById(noteEntity);
 
-      expect(editNoteCubit.state, EditNoteLoading());
+      expect(editNoteCubit.state, EditNoteState.loadingNotes());
       await untilCalled(mockEditNoteByIdUseCase.call(EditNoteParams(noteEntity: noteEntity)));
-      expect(editNoteCubit.state, EditNoteError(savingNoteFailure: SavingNoteFailure(message: "Error on updating note")));
+      expect(editNoteCubit.state, EditNoteState.errorOnEditNotes(savingNoteFailure: Failures.savingNote(message: "Error on updating note")));
     });
   });
 }

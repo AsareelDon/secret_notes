@@ -36,14 +36,14 @@ void main() {
 
   test("GIVEN note deletion fails, WHEN [DeleteNoteByIdUseCase] is called, THEN it should return a Failure", () async {
     when(mockNoteRepository.deleteNoteById(deleteNoteParams.noteId))
-        .thenAnswer((_) async => Left(SavingNoteFailure(message: "Failed to delete note")));
+        .thenAnswer((_) async => Left(Failures.noteDeletion(message: "Failed to delete note")));
 
     final result = await deleteNoteByIdUseCase.call(deleteNoteParams);
 
     expect(result, isA<Left<Failures, int>>());
     result.fold(
         (left) {
-          expect(left, isA<SavingNoteFailure>());
+          expect(left, isA<Failures>());
           expect(left.message, "Failed to delete note");
         },
         (_) => fail("Expected Left but got Right")

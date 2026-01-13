@@ -44,14 +44,14 @@ void main() {
 
   test('GIVEN note update fails, WHEN [EditNoteByIdUseCase] is called, THEN it should return a Failure', () async {
     when(mockNoteRepository.editNoteById(editedNotes))
-        .thenAnswer((_) async => Left(SavingNoteFailure(message: 'Failed to update note')));
+        .thenAnswer((_) async => Left(Failures.savingNote(message: 'Failed to update note')));
 
     final result = await editNoteByIdUseCase.call(EditNoteParams(noteEntity: editedNotes));
 
     expect(result, isA<Left<Failures, NoteEntity>>());
     result.fold(
         (failure) {
-          expect(failure, isA<SavingNoteFailure>());
+          expect(failure, isA<Failures>());
           expect(failure.message, 'Failed to update note');
         },
         (_) => fail("Expected Left but got Right")

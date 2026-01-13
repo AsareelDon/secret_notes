@@ -20,7 +20,7 @@ void main() {
 
 
   test('GIVEN [DeleteNoteCubit] is initialized, WHEN no action is taken, THEN initial state should be [DeleteNoteInitial]', () {
-    expect(deleteNoteCubit.state, DeleteNoteInitial());
+    expect(deleteNoteCubit.state, DeleteNoteState.initialDelete());
   });
 
   group('DeleteNoteCubit', () {
@@ -30,20 +30,20 @@ void main() {
 
       deleteNoteCubit.deleteNoteById(1);
 
-      expect(deleteNoteCubit.state, DeleteNoteLoading());
+      expect(deleteNoteCubit.state, DeleteNoteState.loadingDeletion());
       await untilCalled(mockDeleteNoteByIdUseCase.call(DeleteNoteParams(noteId: 1)));
-      expect(deleteNoteCubit.state, DeleteNoteSuccess());
+      expect(deleteNoteCubit.state, DeleteNoteState.successOnDeleteNotes(isSuccess: true));
     });
 
     test('GIVEN [deleteNoteById] fails, WHEN [deleteNoteById] is called, THEN it should emit loading and failure states', () async {
       when(mockDeleteNoteByIdUseCase.call(any))
-          .thenAnswer((_) async => Left(CacheFailure(message: 'Failed to remove note')));
+          .thenAnswer((_) async => Left(Failures.noteDeletion(message: 'Failed to remove note')));
 
       deleteNoteCubit.deleteNoteById(1);
 
-      expect(deleteNoteCubit.state, DeleteNoteLoading());
+      expect(deleteNoteCubit.state, DeleteNoteState.loadingDeletion());
       await untilCalled(mockDeleteNoteByIdUseCase.call(DeleteNoteParams(noteId: 1)));
-      expect(deleteNoteCubit.state, DeleteNoteFailure(error: 'Failed to remove note'));
+      expect(deleteNoteCubit.state, DeleteNoteState.errorOnDeleteNotes(deleteFailure: Failures.noteDeletion(message: 'Failed to remove note')));
     });
   });
 }

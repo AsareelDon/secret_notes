@@ -48,10 +48,10 @@ class NoteRepositoryImpl implements NoteRepository {
 
     } on CacheErrorException catch (e) {
       devLogger.error("Error on saving note: ${e.message}");
-      return Left(SavingNoteFailure(message: e.message));
+      return Left(Failures.savingNote(message: e.message));
     } catch (e) {
       devLogger.error("Error saving note: $e");
-      return Left(CacheFailure(message: e.toString()));
+      return Left(Failures.cache(message: e.toString()));
     }
   }
 
@@ -77,10 +77,10 @@ class NoteRepositoryImpl implements NoteRepository {
 
     } on CacheErrorException catch (e) {
       devLogger.error("Error on fetching notes: ${e.message}");
-      return Left(CacheFailure(message: e.message));
+      return Left(Failures.cache(message: e.message));
     } catch (e) {
       devLogger.error("Error fetching notes: $e");
-      return Left(CacheFailure(message: e.toString()));
+      return Left(Failures.cache(message: e.toString()));
     }
   }
 
@@ -108,13 +108,13 @@ class NoteRepositoryImpl implements NoteRepository {
 
     } on CacheErrorException catch (error) {
       devLogger.error("Error on saving note: ${error.message}");
-      return Left(SavingNoteFailure(message: error.message));
+      return Left(Failures.savingNote(message: error.message));
     } on ResourceNotFoundErrorException catch (error) {
       devLogger.error("Note not found: ${error.message}");
-      return Left(ResourceNotFoundFailure(message: error.message));
+      return Left(Failures.resourceNotFound(message: error.message));
     } catch (error) {
       devLogger.error("Error saving note: $error");
-      return Left(SavingNoteFailure(message: error.toString()));
+      return Left(Failures.savingNote(message: error.toString()));
     }
   }
 
@@ -135,13 +135,13 @@ class NoteRepositoryImpl implements NoteRepository {
 
     } on CacheErrorException catch (error) {
       devLogger.error("Error on deleting note: ${error.message}");
-      return Left(NoteDeletionFailure(message: error.message));
+      return Left(Failures.noteDeletion(message: error.message));
     } on ResourceNotFoundErrorException catch (error) {
       devLogger.error("Note not found: ${error.message}");
-      return Left(ResourceNotFoundFailure(message: error.message));
+      return Left(Failures.resourceNotFound(message: error.message));
     } catch (error) {
       devLogger.error("Error deleting note: $error");
-      return Left(NoteDeletionFailure(message: error.toString()));
+      return Left(Failures.noteDeletion(message: error.toString()));
     }
   }
 }

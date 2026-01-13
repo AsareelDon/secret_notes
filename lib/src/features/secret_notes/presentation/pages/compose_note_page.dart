@@ -66,21 +66,27 @@ class _ComposeNotePageState extends State<ComposeNotePage> {
     return MultiBlocListener(
       listeners: [
         BlocListener<CreateNoteCubit, CreateNoteState>(
-          listenWhen: (previous, current) => current is CreateNoteSuccess,
           listener: (context, state) {
-            if (state is CreateNoteSuccess) {
-              Navigator.pop(context);
-            }
-          },
+            state.maybeWhen(
+              successOnCreateNotes: (isSuccess) {
+                if (isSuccess) {
+                  Navigator.pop(context);
+                }
+              }, orElse: () {  },
+            );
+          }
         ),
         BlocListener<EditNoteCubit, EditNoteState>(
-          listenWhen: (previous, current) => current is EditNoteLoaded,
           listener: (context, state) {
-            if (state is EditNoteLoaded) {
-              Navigator.pop(context);
-            }
+            state.maybeWhen(
+              successOnEditNotes: (isSuccess) {
+                if (isSuccess) {
+                  Navigator.pop(context);
+                }
+              }, orElse: () {  },
+            );
           }
-        )
+        ),
       ],
       child: _noteWidgetBody(context)
     );

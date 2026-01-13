@@ -9,15 +9,19 @@ import 'package:secret_notes/src/features/secret_notes/presentation/cubit/update
 class EditNoteCubit extends Cubit<EditNoteState> {
   final EditNoteByIdUseCase editNoteByIdUseCase;
 
-  EditNoteCubit({required this.editNoteByIdUseCase}) : super(EditNoteInitial());
+  EditNoteCubit({required this.editNoteByIdUseCase}) : super(EditNoteState.initialNotes());
 
   Future<void> editNoteById(NoteEntity noteEntity) async {
-    emit(EditNoteLoading());
+    emit(EditNoteState.loadingNotes());
     final result = await editNoteByIdUseCase.call(EditNoteParams(noteEntity: noteEntity));
 
     result.fold(
-      (failure) => emit(EditNoteError(savingNoteFailure:SavingNoteFailure(message: failure.message) )),
-      (success) => emit(EditNoteLoaded()),
+      (failure) => emit(
+          EditNoteState.errorOnEditNotes(
+              savingNoteFailure: SavingNoteFailure(message: failure.message)
+          )
+      ),
+      (success) => emit(EditNoteState.successOnEditNotes(isSuccess: true)),
     );
   }
 }

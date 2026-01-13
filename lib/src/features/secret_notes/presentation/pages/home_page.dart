@@ -44,55 +44,69 @@ class _HomePageState extends State<HomePage> {
           child: MultiBlocListener(
             listeners: [
               BlocListener<CreateNoteCubit, CreateNoteState>(
-                listenWhen: (previous, current) => current is CreateNoteSuccess,
                 listener: (context, state) {
-                  if (state is CreateNoteSuccess) {
-                    context.read<GetNoteCubit>().getAllNotes();
-                  }
-                }
-              ),
-              BlocListener<EditNoteCubit, EditNoteState>(
-                listenWhen: (previous, current) => current is EditNoteLoaded,
-                listener: (context, state) {
-                  if (state is EditNoteLoaded) {
-                    context.read<GetNoteCubit>().getAllNotes();
-                  }
+                  state.maybeWhen(
+                    successOnCreateNotes: (isSuccess) {
+                      if (isSuccess) {
+                        context.read<GetNoteCubit>().getAllNotes();
+                      }
+                    }, orElse: () {  },
+                  );
                 }
               ),
               BlocListener<DeleteNoteCubit, DeleteNoteState>(
-                listenWhen: (previous, current) => current is DeleteNoteSuccess,
                 listener: (context, state) {
-                  if (state is DeleteNoteSuccess) {
-                    context.read<GetNoteCubit>().getAllNotes();
-                  }
+                  state.maybeWhen(
+                    successOnDeleteNotes: (isSuccess) {
+                      if (isSuccess) {
+                        context.read<GetNoteCubit>().getAllNotes();
+                      }
+                    }, orElse: () {  },
+                  );
                 }
-              )
+              ),
+              BlocListener<EditNoteCubit, EditNoteState>(
+                listener: (context, state) {
+                  state.maybeWhen(
+                    successOnEditNotes: (isSuccess) {
+                      if (isSuccess) {
+                        context.read<GetNoteCubit>().getAllNotes();
+                      }
+                    }, orElse: () {  },
+                  );
+                }
+              ),
             ],
             child: BlocBuilder<GetNoteCubit, GetNoteState>(
               builder: (context, state) {
-                if (state is GetNoteLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is GetNoteLoaded) {
-                  final notes = state.notes;
-                  if (notes.isEmpty) {
-                    return const Center(child: Text("No notes found"));
-                  }
-                  return ListView.builder(
-                    itemCount: state.notes.length,
-                    itemBuilder: (context, index) {
-                      final note = state.notes[index];
-                      final dateCreated = DateFormat('MM/dd/yyyy')
-                        .format(note.lastEditDate?? note.creationDate);
-                      return NoteTile(
-                        noteEntity: note,
-                        dateCreated: dateCreated,
-                        noteTileIndex: index,
-                      );
-                    },
-                  );
-                }
-                return const SizedBox.shrink();
-              }
+                return state.when(
+                  initialNotes: () => const SizedBox.shrink(),
+                  loadingNotes: () => const Center(child: CircularProgressIndicator()),
+
+                  successOnFetchNotes: (notes) {
+                    if (notes.isEmpty) {
+                      return const Center(child: Text('No notes found'));
+                    }
+
+                    return ListView.builder(
+                      itemCount: notes.length,
+                      itemBuilder: (context, index) {
+                        final note = notes[index];
+                        final dateCreated = DateFormat('MM/dd/yyyy')
+                          .format(note.lastEditDate ?? note.creationDate);
+
+                        return NoteTile(
+                          noteEntity: note,
+                          dateCreated: dateCreated,
+                          noteTileIndex: index,
+                        );
+                      },
+                    );
+                  },
+
+                  errorOnFetchNotes: (_) => const SizedBox.shrink(),
+                );
+              },
             ),
           ),
         ),

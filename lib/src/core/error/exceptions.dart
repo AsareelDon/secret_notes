@@ -6,13 +6,13 @@
 /// - Unexpected cache state
 ///
 /// It should only be thrown inside the data layer and
-/// later mapped to a corresponding [CacheFailure] in the domain layer.
+/// later mapped to a corresponding [Failures] in the domain layer.
 class CacheErrorException implements Exception {
   /// Human-readable description of the cache error.
   final String message;
 
   /// Creates a [CacheErrorException] with the given [message].
-  CacheErrorException(this.message);
+  const CacheErrorException(this.message);
 }
 
 /// Exception thrown when a requested resource cannot be found.
@@ -28,5 +28,5 @@ class ResourceNotFoundErrorException implements Exception {
   final String message;
 
   /// Creates a [ResourceNotFoundErrorException] with the given [message].
-  ResourceNotFoundErrorException(this.message);
+  const ResourceNotFoundErrorException(this.message);
 }

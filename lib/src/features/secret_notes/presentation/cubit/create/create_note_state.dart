@@ -1,38 +1,46 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:secret_notes/src/core/error/failures.dart';
+part 'create_note_state.freezed.dart';
 
-abstract class CreateNoteState extends Equatable {
-  const CreateNoteState();
+/// Uses Freezed union types to model all possible states:
+/// - [initialNotes]: before any action has been taken
+/// - [loadingNotes]: when a note creation is in progress
+/// - [errorOnCreateNotes]: when note creation fails
+/// - [successOnCreateNotes]: when note creation succeeds
+@freezed
+sealed class CreateNoteState with _$CreateNoteState {
+  /// Initial state before any note creation attempt.
+  const factory CreateNoteState.initialNotes() = _InitialNotes;
 
-  @override
-  List<Object> get props => [];
-}
+  /// State when note creation is in progress.
+  const factory CreateNoteState.loadingNotes() = _LoadingNotes;
 
-class CreateNoteInitial extends CreateNoteState {
-  const CreateNoteInitial();
+  /// State when note creation fails.
+  ///
+  /// [savingNoteFailure] contains the specific failure reason.
+  const factory CreateNoteState.errorOnCreateNotes({
+    required Failures savingNoteFailure,
+  }) = _ErrorOnCreateNotes;
 
-  @override
-  List<Object> get props => [];
-}
-class CreateNoteLoading extends CreateNoteState {
-  const CreateNoteLoading();
+  /// State when note creation succeeds.
+  ///
+  /// [isSuccess] indicates if the creation was successful.
+  const factory CreateNoteState.successOnCreateNotes({
+    required bool isSuccess,
+  }) = _SuccessOnCreateNotes;
 
-  @override
-  List<Object> get props => [];
-}
+  /// Private constructor to allow adding custom getters.
+  const CreateNoteState._();
 
-class CreateNoteSuccess extends CreateNoteState {
-  const CreateNoteSuccess();
+  /// Returns `true` if the current state represents a loading state.
+  bool get isLoading =>
+      maybeWhen(loadingNotes: () => true, orElse: () => false);
 
-  @override
-  List<Object> get props => [];
-}
+  /// Returns `true` if the current state represents a failure state.
+  bool get hasFailure =>
+      maybeWhen(errorOnCreateNotes: (_) => true, orElse: () => false);
 
-class CreateNoteFailure extends CreateNoteState {
-  final SavingNoteFailure savingNoteFailure;
-
-  const CreateNoteFailure({required this.savingNoteFailure});
-
-  @override
-  List<Object> get props => [savingNoteFailure];
+  /// Returns `true` if the current state represents a success state.
+  bool get isSuccess =>
+      maybeWhen(successOnCreateNotes: (_) => true, orElse: () => false);
 }

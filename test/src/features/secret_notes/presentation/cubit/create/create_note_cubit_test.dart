@@ -28,7 +28,7 @@ void main() {
 
 
   test('GIVEN [CreateNoteCubit] is initialized, WHEN no action is taken, then initial state should be [CreateNoteInitial]', () {
-    expect(createNoteCubit.state, CreateNoteInitial());
+    expect(createNoteCubit.state, CreateNoteState.initialNotes());
   });
 
   test('GIVEN [createNote] succeeds, WHEN [createNote] is called, THEN it should emit loading and success states', () async {
@@ -38,8 +38,8 @@ void main() {
     expectLater(
       createNoteCubit.stream,
       emitsInOrder([
-        CreateNoteLoading(),
-        CreateNoteSuccess(),
+        CreateNoteState.loadingNotes(),
+        CreateNoteState.successOnCreateNotes(isSuccess: true),
       ])
     );
     await createNoteCubit.createNote(noteEntity);
@@ -47,13 +47,13 @@ void main() {
 
   test('GIVEN [createNote] fails, WHEN [createNote] is called, then it should emit loading and failure states', () async {
     when(mockCreateNoteUseCase.call(any))
-        .thenAnswer((_) async => Left(CacheFailure(message: 'Error saving note')));
+        .thenAnswer((_) async => Left(Failures.cache(message: 'Error saving note')));
 
     expectLater(
         createNoteCubit.stream,
         emitsInOrder([
-          CreateNoteLoading(),
-          CreateNoteFailure(savingNoteFailure: SavingNoteFailure(message: "Error saving note")),
+          CreateNoteState.loadingNotes(),
+          CreateNoteState.errorOnCreateNotes(savingNoteFailure: Failures.savingNote(message: "Error saving note")),
         ])
     );
     await createNoteCubit.createNote(noteEntity);

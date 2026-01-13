@@ -9,15 +9,19 @@ import 'package:secret_notes/src/features/secret_notes/presentation/cubit/read/g
 class GetNoteCubit extends Cubit<GetNoteState> {
   final GetAllNotesUsecase getAllNotesUsecase;
 
-  GetNoteCubit({required this.getAllNotesUsecase}) : super(GetNoteInitial());
+  GetNoteCubit({required this.getAllNotesUsecase}) : super(GetNoteState.initialNotes());
 
   Future<void> getAllNotes() async {
-    emit(GetNoteLoading());
+    emit(GetNoteState.loadingNotes());
     final result = await getAllNotesUsecase(NoParams());
 
     result.fold(
-      (failure) => emit(GetNoteError(cacheFailure: CacheFailure(message: failure.message))),
-      (noteLists) => emit(GetNoteLoaded(notes: noteLists))
+      (failure) => emit(
+          GetNoteState.errorOnFetchNotes(
+              cacheFailure: Failures.cache(message: failure.message)
+          )
+      ),
+      (noteLists) => emit(GetNoteState.successOnFetchNotes(notes: noteLists))
     );
   }
 }

@@ -44,11 +44,14 @@ class _HomePageState extends State<HomePage> {
           child: MultiBlocListener(
             listeners: [
               BlocListener<CreateNoteCubit, CreateNoteState>(
-                listenWhen: (previous, current) => current is CreateNoteSuccess,
                 listener: (context, state) {
-                  if (state is CreateNoteSuccess) {
-                    context.read<GetNoteCubit>().getAllNotes();
-                  }
+                  state.maybeWhen(
+                    successOnCreateNotes: (isSuccess) {
+                      if (isSuccess) {
+                        context.read<GetNoteCubit>().getAllNotes();
+                      }
+                    }, orElse: () {  },
+                  );
                 }
               ),
               BlocListener<EditNoteCubit, EditNoteState>(

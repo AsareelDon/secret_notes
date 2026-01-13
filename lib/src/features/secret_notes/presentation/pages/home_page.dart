@@ -73,29 +73,34 @@ class _HomePageState extends State<HomePage> {
             ],
             child: BlocBuilder<GetNoteCubit, GetNoteState>(
               builder: (context, state) {
-                if (state is GetNoteLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is GetNoteLoaded) {
-                  final notes = state.notes;
-                  if (notes.isEmpty) {
-                    return const Center(child: Text("No notes found"));
-                  }
-                  return ListView.builder(
-                    itemCount: state.notes.length,
-                    itemBuilder: (context, index) {
-                      final note = state.notes[index];
-                      final dateCreated = DateFormat('MM/dd/yyyy')
-                        .format(note.lastEditDate?? note.creationDate);
-                      return NoteTile(
-                        noteEntity: note,
-                        dateCreated: dateCreated,
-                        noteTileIndex: index,
-                      );
-                    },
-                  );
-                }
-                return const SizedBox.shrink();
-              }
+                return state.when(
+                  initialNotes: () => const SizedBox.shrink(),
+                  loadingNotes: () => const Center(child: CircularProgressIndicator()),
+
+                  successOnFetchNotes: (notes) {
+                    if (notes.isEmpty) {
+                      return const Center(child: Text('No notes found'));
+                    }
+
+                    return ListView.builder(
+                      itemCount: notes.length,
+                      itemBuilder: (context, index) {
+                        final note = notes[index];
+                        final dateCreated = DateFormat('MM/dd/yyyy')
+                          .format(note.lastEditDate ?? note.creationDate);
+
+                        return NoteTile(
+                          noteEntity: note,
+                          dateCreated: dateCreated,
+                          noteTileIndex: index,
+                        );
+                      },
+                    );
+                  },
+
+                  errorOnFetchNotes: (_) => const SizedBox.shrink(),
+                );
+              },
             ),
           ),
         ),

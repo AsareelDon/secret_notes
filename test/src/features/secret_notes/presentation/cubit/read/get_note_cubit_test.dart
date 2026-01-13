@@ -45,7 +45,7 @@ void main() {
   ];
 
   test('GIVEN [GetNoteCubit] is initialized, WHEN no action is taken, THEN initial state should be [GetNoteInitial]', () {
-    expect(getNoteCubit.state, GetNoteInitial());
+    expect(getNoteCubit.state, GetNoteState.initialNotes());
   });
 
   group('GetNoteCubit', () {
@@ -55,20 +55,20 @@ void main() {
 
       getNoteCubit.getAllNotes();
 
-      expect(getNoteCubit.state, GetNoteLoading());
+      expect(getNoteCubit.state, GetNoteState.loadingNotes());
       await untilCalled(mockGetAllNoteUseCase.call(NoParams()));
-      expect(getNoteCubit.state, GetNoteLoaded(notes: mockNotes));
+      expect(getNoteCubit.state, GetNoteState.successOnFetchNotes(notes: mockNotes));
     });
 
     test('GIVEN [getAllNotes] fails, WHEN [getAllNotes] is called, THEN it should emit loading and error states', () async {
       when(mockGetAllNoteUseCase.call(NoParams()))
-          .thenAnswer((_) async => Left(CacheFailure(message: "Error on getting notes")));
+          .thenAnswer((_) async => Left(Failures.cache(message: "Error on getting notes")));
 
       getNoteCubit.getAllNotes();
 
-      expect(getNoteCubit.state, GetNoteLoading());
+      expect(getNoteCubit.state, GetNoteState.loadingNotes());
       await untilCalled(mockGetAllNoteUseCase.call(NoParams()));
-      expect(getNoteCubit.state, GetNoteError(cacheFailure: CacheFailure(message: "Error on getting notes")));
+      expect(getNoteCubit.state, GetNoteState.errorOnFetchNotes(cacheFailure: Failures.cache(message: "Error on getting notes")));
     });
   });
 }

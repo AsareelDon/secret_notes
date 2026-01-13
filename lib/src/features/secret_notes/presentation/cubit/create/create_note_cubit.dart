@@ -9,15 +9,19 @@ import 'package:secret_notes/src/features/secret_notes/presentation/cubit/create
 class CreateNoteCubit extends Cubit<CreateNoteState> {
   final CreateNoteUseCase createNoteUseCase;
 
-  CreateNoteCubit({required this.createNoteUseCase}) : super(CreateNoteInitial());
+  CreateNoteCubit({required this.createNoteUseCase}) : super(CreateNoteState.initialNotes());
 
   Future<void> createNote(NoteEntity noteEntity) async {
-    emit(CreateNoteLoading());
+    emit(CreateNoteState.loadingNotes());
     final result = await createNoteUseCase.call(NoteParams(noteEntity: noteEntity));
 
     result.fold(
-      (failure) => emit(CreateNoteFailure(savingNoteFailure: SavingNoteFailure(message: failure.message))),
-      (success) => emit(CreateNoteSuccess()),
+      (failure) => emit(
+          CreateNoteState.errorOnCreateNotes(
+              savingNoteFailure: SavingNoteFailure(message: failure.message)
+          )
+      ),
+      (success) => emit(CreateNoteState.successOnCreateNotes(isSuccess: true)),
     );
   }
 }
